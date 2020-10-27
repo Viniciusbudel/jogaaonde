@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jogaaonde/empresa/lista_empresa_page.dart';
+import 'package:jogaaonde/marcar_partida/selecionar_time_page.dart';
 import 'package:jogaaonde/quadra/quadra_page.dart';
 import 'package:jogaaonde/social/social_page.dart';
 
@@ -79,7 +80,7 @@ class GridDashboard extends StatelessWidget {
                       // do something
                         break;
                       case 1:
-                        (push(context, ListaEmpresaPage()));
+                        (push(context, SelecionarTimePage()));
                         break;
                       case 2:
                         (push(context, SocialPage()));

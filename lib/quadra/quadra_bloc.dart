@@ -12,35 +12,12 @@ class QuadraBloc extends SimpleBloc<List<Quadra>> {
 
   get stream => controller.stream;
 
-  Future<List<Quadra>> getQuadra() async {
+  Future<List<Quadra>> getQuadraByEmpresa(String id) async {
 
-    final response = await QuadraApi.getQuadra();
+    final response = await QuadraApi.getQuadraByEmpresa(id);
 
     add(response);
 
     return response;
   }
-
-  // Future<List<Quadra>> listarQuadras() async {
-  //   try {
-  //     List<Quadra> response = await QuadraApi.getQuadras();
-  //
-  //     add(response);
-  //
-  //     return response;
-  //   } catch (e) {
-  //     addError(e);
-  //   }
-  // }
-  // Future<List<Quadra>> listarQuadrasPorNome(String nome) async {
-  //   try {
-  //     List<Quadra> response = await QuadraApi.getQuadrasPorNome(nome);
-  //
-  //     add(response);
-  //
-  //     return response;
-  //   } catch (e) {
-  //     addError(e);
-  //   }
-  // }
 }

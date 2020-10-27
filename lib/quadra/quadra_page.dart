@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jogaaonde/empresa/empresa.dart';
 import 'package:jogaaonde/home/home_page.dart';
 import 'package:jogaaonde/marcar_partida/selecionar_data_page.dart';
 import 'package:jogaaonde/quadra/quadra.dart';
@@ -8,12 +9,16 @@ import 'package:jogaaonde/utils/constants.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'package:jogaaonde/utils/text_error.dart';
 
-class QuadraPage extends StatefulWidget {
+class ListarQuadraPage extends StatefulWidget {
+  Empresa empresa;
+
+  ListarQuadraPage(this.empresa);
+
   @override
-  _QuadraPageState createState() => _QuadraPageState();
+  _ListarQuadraPageState createState() => _ListarQuadraPageState();
 }
 
-class _QuadraPageState extends State<QuadraPage> {
+class _ListarQuadraPageState extends State<ListarQuadraPage> {
   final _bloc = QuadraBloc();
   List<Quadra> quadras;
   final _tNome = TextEditingController();
@@ -21,7 +26,7 @@ class _QuadraPageState extends State<QuadraPage> {
   @override
   void initState() {
     // TODO: implement initState
-    _bloc.getQuadra();
+    _bloc.getQuadraByEmpresa(widget.empresa.id.toString());
     super.initState();
   }
 
@@ -333,12 +338,11 @@ class _QuadraPageState extends State<QuadraPage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-
     _bloc.dispose();
   }
 
   Future<void> _onRefresh() {
-    return _bloc.getQuadra();
+    return _bloc.getQuadraByEmpresa(widget.empresa.id.toString());
   }
 
   Future<bool> _onBackPressed() async {

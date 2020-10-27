@@ -6,11 +6,16 @@ import 'package:jogaaonde/home/home_page.dart';
 import 'package:jogaaonde/marcar_partida/selecionar_data_page.dart';
 import 'package:jogaaonde/quadra/quadra.dart';
 import 'package:jogaaonde/quadra/quadra_bloc.dart';
+import 'package:jogaaonde/quadra/quadra_page.dart';
 import 'package:jogaaonde/utils/constants.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'package:jogaaonde/utils/text_error.dart';
 
 class ListaEmpresaPage extends StatefulWidget {
+  String idTime;
+
+  ListaEmpresaPage(this.idTime);
+
   @override
   _ListaEmpresaPageState createState() => _ListaEmpresaPageState();
 }
@@ -202,7 +207,7 @@ class _ListaEmpresaPageState extends State<ListaEmpresaPage> {
   makeListTile(index, context) {
     Empresa e = quadras[index];
     return GestureDetector(
-      onTap: () => push(context, SelecionarData()),
+      onTap: () => push(context, ListarQuadraPage(e)),
       child: ListTile(
           contentPadding:
               EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
