@@ -21,13 +21,11 @@ class _SelecionarTimePageState extends State<SelecionarTimePage> {
   final _bloc = TimeBloc();
   List<Time> times;
   String id = "";
-  final _tNome = TextEditingController();
 
   @override
   void initState() {
     // TODO: implement initState
     _bloc.listarTimes();
-
     loadData();
     super.initState();
   }
@@ -59,7 +57,6 @@ class _SelecionarTimePageState extends State<SelecionarTimePage> {
                           push(context, HomePage());
                         },
                       ),
-
                       Padding(
                         padding: const EdgeInsets.only(left: 8),
                         child: Column(
@@ -83,12 +80,6 @@ class _SelecionarTimePageState extends State<SelecionarTimePage> {
                           ],
                         ),
                       ),
-                      //                    IconButton(
-                      //                      alignment: Alignment.topCenter,
-                      //                      icon: Icon(Icons.list),
-                      //                      color: Colors.white70,
-                      //                      onPressed: () {},
-                      //                    )
                     ],
                   ),
                 ),
@@ -138,34 +129,36 @@ class _SelecionarTimePageState extends State<SelecionarTimePage> {
 
   makeListTile(index, context) {
     Time c = times[index];
-    return c.jogador_adm.toString() == id ?
-     GestureDetector(
-      onTap: () => push(context, ListaEmpresaPage(c.id.toString())),
-      child: ListTile(
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-          leading: Container(
-            padding: EdgeInsets.only(right: 12.0),
-            decoration: new BoxDecoration(
-                border: new Border(
-                    right: new BorderSide(width: 1.0, color: Colors.white24))),
-            child: Icon(Icons.flag, color: Colors.white),
-          ),
-          title: Text(
-            c.nome,
-            style: GoogleFonts.lato(
-                color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          // subtitle: Text("Intermediate", style: GoogleFonts.lato(color: Colors.white)),
+    return c.jogador_adm.toString() == id
+        ? GestureDetector(
+            onTap: () => push(context, ListaEmpresaPage(c.id.toString())),
+            child: ListTile(
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                leading: Container(
+                  padding: EdgeInsets.only(right: 12.0),
+                  decoration: new BoxDecoration(
+                      border: new Border(
+                          right: new BorderSide(
+                              width: 1.0, color: Colors.white24))),
+                  child: Icon(Icons.flag, color: Colors.white),
+                ),
+                title: Text(
+                  c.nome,
+                  style: GoogleFonts.lato(
+                      color: Colors.white, fontWeight: FontWeight.bold,fontSize: 18),
+                ),
+                // subtitle: Text("Intermediate", style: GoogleFonts.lato(color: Colors.white)),
 
-          subtitle: Text(
-            c.nome,
-            style: GoogleFonts.lato(
-                color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          trailing: Icon(Icons.keyboard_arrow_right,
-              color: Colors.white, size: 30.0)),
-    ) :  Container();
+                subtitle: Text(
+                  c.descricao,
+                  style: GoogleFonts.lato(
+                      color: Colors.white, fontWeight: FontWeight.normal),
+                ),
+                trailing: Icon(Icons.keyboard_arrow_right,
+                    color: Colors.white, size: 30.0)),
+          )
+        : Container();
   }
 
   Card makeCard(int index, context) {
@@ -173,9 +166,10 @@ class _SelecionarTimePageState extends State<SelecionarTimePage> {
 
     return Card(
       elevation: 8.0,
-      margin: new EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+      margin: new EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
-        decoration: BoxDecoration(color: c.jogador_adm.toString() == id ? Colors.amber : Colors.green),
+        decoration: BoxDecoration(
+            color: Colors.green),
         child: makeListTile(index, context),
       ),
     );

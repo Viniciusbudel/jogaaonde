@@ -9,7 +9,7 @@ class Quadra {
   bool excluido;
   String criadoEm;
   String atualizadoEm;
-  List<String> imagens;
+  String imagem;
 
   Quadra(
       {this.id,
@@ -22,7 +22,7 @@ class Quadra {
         this.excluido,
         this.criadoEm,
         this.atualizadoEm,
-        this.imagens});
+        this.imagem});
 
   Quadra.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -35,7 +35,7 @@ class Quadra {
     excluido = json['excluido'];
     criadoEm = json['criado_em'];
     atualizadoEm = json['atualizado_em'];
-    imagens = json['imagens'].cast<String>();
+    imagem = json['imagem'];
   }
 
   Map<String, dynamic> toJson() {
@@ -50,7 +50,7 @@ class Quadra {
     data['excluido'] = this.excluido;
     data['criado_em'] = this.criadoEm;
     data['atualizado_em'] = this.atualizadoEm;
-    data['imagens'] = this.imagens;
+    data['imagem'] = this.imagem;
     return data;
   }
 }

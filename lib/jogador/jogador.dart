@@ -20,6 +20,8 @@ class Jogador {
   String atualizadoEm;
   int fifa_times_id;
   String senha;
+  String posicao;
+  String avaliacao;
 
   Jogador({this.id,
     this.nome,
@@ -38,6 +40,8 @@ class Jogador {
     this.criadoEm,
     this.atualizadoEm,
     this.senha,
+    this.posicao,
+    this.avaliacao,
     this.fifa_times_id});
 
   Jogador.fromJson(Map<String, dynamic> json) {
@@ -57,6 +61,7 @@ class Jogador {
     pais = json['pais'];
     excluido = json['excluido'];
     criadoEm = json['criado_em'];
+    posicao = json['posicao'];
     atualizadoEm = json['atualizado_em'];
 
   }

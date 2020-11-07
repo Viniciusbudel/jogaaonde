@@ -1,71 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:jogaaonde/marcar_partida/cadastrar_partida.dart';
+import 'package:jogaaonde/marcar_partida/cadastrar_partida_api.dart';
+import 'package:jogaaonde/marcar_partida/horario_partida/horario_partida.dart';
+import 'package:jogaaonde/marcar_partida/horario_partida/horario_partida_bloc.dart';
+import 'package:jogaaonde/utils/custom_dialog.dart';
+import 'package:jogaaonde/utils/text_error.dart';
 
 class SelecionarData extends StatefulWidget {
+  String idTime;
+  String idQuadra;
+
+  SelecionarData(this.idTime, this.idQuadra);
+
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<SelecionarData> {
+  bool showProgress = false;
   DateTime _dateTime;
+
+  MaterialColor _color = Colors.grey;
   String dropdownValue = 'Dinheiro';
 
+  final _bloc = HorarioPartidaBloc();
+  List<HorarioPartida> horarios;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    //_bloc.listarJogadors();
+    super.initState();
+  }
+
   final f = new DateFormat('dd/MM/yyyy');
-  Horarios item1 = new Horarios(
-    horario_inicial: "5:30",
-    horario_final: "6:30",
-    disponivel: true,
-  );
-  Horarios item2 = new Horarios(
-    horario_inicial: "6:30",
-    horario_final: "7:30",
-    disponivel: true,
-  );
-  Horarios item3 = new Horarios(
-    horario_inicial: "5:30",
-    horario_final: "6:30",
-    disponivel: true,
-  );
-  Horarios item4 = new Horarios(
-    horario_inicial: "7:30",
-    horario_final: "8:30",
-    disponivel: true,
-  );
-  Horarios item5 = new Horarios(
-    horario_inicial: "8:30",
-    horario_final: "9:30",
-    disponivel: true,
-  );
-  Horarios item6 = new Horarios(
-    horario_inicial: "10:30",
-    horario_final: "11:30",
-    disponivel: false,
-  );
-  Horarios item7 = new Horarios(
-    horario_inicial: "11:30",
-    horario_final: "12:30",
-    disponivel: true,
-  );
-  Horarios item8 = new Horarios(
-    horario_inicial: "12:30",
-    horario_final: "13:30",
-    disponivel: true,
-  );
-  Horarios item9 = new Horarios(
-    horario_inicial: "13:30",
-    horario_final: "14:30",
-    disponivel: true,
-  );
-  Horarios item10 = new Horarios(
-    horario_inicial: "14:30",
-    horario_final: "15:30",
-    disponivel: true,
-  );
-  Horarios item11 = new Horarios(
-    horario_inicial: "15:30",
-    horario_final: "16:30",
-    disponivel: true,
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -75,25 +45,11 @@ class _HomeState extends State<SelecionarData> {
   }
 
   Container _body(BuildContext context) {
-    List<Horarios> myList = [
-      item1,
-      item2,
-      item3,
-      item4,
-      item5,
-      item6,
-      item7,
-      item8,
-      item9,
-      item10,
-      item11
-    ];
-
     return Container(
       padding: EdgeInsets.all(16),
       child: Column(children: <Widget>[
         _datePicker(context),
-        _listView(myList),
+        _listHorarios(),
         _dropDown(),
         _buildCadastroBtn()
       ]),
@@ -122,35 +78,88 @@ class _HomeState extends State<SelecionarData> {
     );
   }
 
-  Flexible _listView(List<Horarios> myList) {
-    return Flexible(
-      child: Container(
-        padding: EdgeInsets.all(16),
-        alignment: Alignment.topCenter,
-        child: ListView.builder(
-            itemCount: myList.length,
-            itemBuilder: (context, index) {
-              Horarios horario = myList[index];
+  _listHorarios() {
+    return StreamBuilder(
+        stream: _bloc.stream,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return TextError("Não foi possivel buscar os dados!");
+          }
+          if (!snapshot.hasData) {
+            return Center(
+              // child: CircularProgressIndicator(),
+            );
+          }
+          horarios = snapshot.data;
+          return RefreshIndicator(
+              onRefresh: _onRefresh, child: _list(horarios, widget.idTime));
+        });
+  }
 
-              return Card(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      horario.horario_inicial + " - " + horario.horario_final,
-                      style: TextStyle(
-                          fontSize: 20,
-                          color:
-                              horario.disponivel ? Colors.green : Colors.red),
-                    )
-                  ],
-                ),
-              );
-            }),
+  _list(List<HorarioPartida> horarios, String idTime) {
+    return ListView.builder(
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: horarios.length,
+      itemBuilder: (BuildContext context, int index) {
+        return makeCard(index, context);
+      },
+    );
+  }
+
+  makeListTile(index, context) {
+    HorarioPartida c = horarios[index];
+    return GestureDetector(
+      onTap: () => _mudaCor(),
+      child: ListTile(
+          contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+          leading: Container(
+            padding: EdgeInsets.only(right: 12.0),
+            decoration: new BoxDecoration(
+                border: new Border(
+                    right: new BorderSide(width: 1.0, color: Colors.white24))),
+            child: Icon(Icons.access_alarm, color: Colors.white),
+          ),
+          title: _textData(c),
+          // subtitle: Text("Intermediate", style: GoogleFonts.lato(color: Colors.white)),
+
+          // subtitle: Row(
+          //   children: <Widget>[
+          //     //Icon(Icons.assignment, color: Colors.white70),
+          //     Text(c.email, style: GoogleFonts.lato(color: Colors.white))
+          //   ],
+          // ),
+          trailing: Icon(Icons.keyboard_arrow_right,
+              color: Colors.white, size: 30.0)),
+    );
+  }
+
+  Text _textData(HorarioPartida c) {
+    var dataAbertura = DateTime.parse(c.dataAbertura);
+    var dataFechamento = DateTime.parse(c.dataFechamento);
+    DateFormat dateFormat = DateFormat("HH:mm:ss");
+
+    String horaAbertura = dateFormat.format(dataAbertura);
+    String horaFechamento = dateFormat.format(dataFechamento);
+
+    return Text(
+      horaAbertura +"  -  "+horaFechamento,
+          style: GoogleFonts.lato(
+              color: Colors.white, fontWeight: FontWeight.bold),
+        );
+  }
+
+  Card makeCard(int index, context) {
+    return Card(
+      elevation: 8.0,
+      margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+      child: Container(
+        decoration: BoxDecoration(color: _color),
+        child: makeListTile(index, context),
       ),
     );
   }
+
 
   DateTime selectedDate = DateTime.now();
   TextEditingController _date = new TextEditingController();
@@ -159,14 +168,21 @@ class _HomeState extends State<SelecionarData> {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
-        firstDate: DateTime(2020, 06),
+        firstDate: selectedDate,
         lastDate: DateTime(2021));
-    if (picked != null && picked != selectedDate)
+    if (picked != null && picked != selectedDate) {
+      selectedDate = picked;
+      String data = selectedDate.toString();
+      data = data.replaceAll(" ", "T");
+
+      _bloc.getHorarioPartida(data);
+
       setState(() {
-        selectedDate = picked;
+        ///jogador/horario_quadra/buscar?quadra_id=1&data_abertura=2020-11-28T00:00:00&data_fechamento=2020-11-29T00:00:00
 
         _date.value = TextEditingValue(text: f.format(picked).toString());
       });
+    }
   }
 
   Widget _dropDown() {
@@ -209,7 +225,7 @@ class _HomeState extends State<SelecionarData> {
       width: double.infinity,
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: () => _configDialog(context),
+        onPressed: () => onClickCadastrarTime(),
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
@@ -228,65 +244,115 @@ class _HomeState extends State<SelecionarData> {
       ),
     );
   }
-}
 
-_configDialog(BuildContext context) async {
-  return showDialog(
-      context: context,
-      builder: (context) {
-        return new AlertDialog(
-          title: Text('Dados do cartão'),
-          content: new SingleChildScrollView(
-            child: new Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                TextField(
-                  obscureText: true,
-                  //controller: _textFieldSenhaController,
-                  decoration: InputDecoration(
-                      hintText: "Digite o nome do proprietario do cartão"),
-                  //keyboardType: TextInputType.text,
-                ),
+  _configDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return new AlertDialog(
+            title: Text('Dados do cartão'),
+            content: new SingleChildScrollView(
+              child: new Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  TextField(
+                    obscureText: true,
+                    //controller: _textFieldSenhaController,
+                    decoration: InputDecoration(
+                        hintText: "Digite o nome do proprietario do cartão"),
+                    //keyboardType: TextInputType.text,
+                  ),
+                  TextField(
+                    obscureText: true,
+                    //controller: _textFieldSenhaController,
+                    decoration: InputDecoration(hintText: "Numero do cartão"),
+                    //keyboardType: TextInputType.text,
+                  ),
+                  TextField(
+                    obscureText: true,
+                    //controller: _textFieldSenhaController,
+                    decoration: InputDecoration(hintText: "Data de vencimento"),
+                    //keyboardType: TextInputType.text,
+                  ),
+                  TextField(
+                    obscureText: true,
+                    //controller: _textFieldSenhaController,
+                    decoration: InputDecoration(hintText: "CVV"),
+                    //keyboardType: TextInputType.text,
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text('Cancelar'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new FlatButton(
+                child: new Text('Salvar'),
+                onPressed: () {
+                  //_validaSenha(context, "Abre_Configuracao", ConfigPage(),"Senha inválida");
+                },
+              )
+            ],
+          );
+        });
+  }
 
-                TextField(
-                  obscureText: true,
-                  //controller: _textFieldSenhaController,
-                  decoration: InputDecoration(hintText: "Numero do cartão"),
-                  //keyboardType: TextInputType.text,
-                ),
-                TextField(
-                  obscureText: true,
-                  //controller: _textFieldSenhaController,
-                  decoration: InputDecoration(hintText: "Data de vencimento"),
-                  //keyboardType: TextInputType.text,
-                ),
-                TextField(
-                  obscureText: true,
-                  //controller: _textFieldSenhaController,
-                  decoration:
-                      InputDecoration(hintText: "CVV"),
-                  //keyboardType: TextInputType.text,
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text('Cancelar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            new FlatButton(
-              child: new Text('Salvar'),
-              onPressed: () {
-                //_validaSenha(context, "Abre_Configuracao", ConfigPage(),"Senha inválida");
-              },
-            )
-          ],
-        );
+  Future<void> _onRefresh() {
+    //return _bloc.listarJogadors();
+  }
+
+
+  onClickCadastrarTime() async {
+    //if (_formKey.currentState.validate()) {
+    setState(() {
+      showProgress = true;
+    });
+
+    var time = CadastrarPartida(
+      aceitaTime: true,
+      anfitriaoTimeId: int.parse(widget.idTime),
+      convidadoTimeId: null,
+      descricao: "Teste",
+      horarioQuadraId: 2,
+    );
+
+    final response = await CadastrarPartidaApi.cadastrarPartida(time);
+
+    if (response.ok) {
+      DialogUtils.showCustomDialog(context,
+          title: "Partida criada com Sucesso!",
+          okBtnText: "Ok",
+          cancelBtnText: "",
+          okBtnFunction: () => Navigator.pop(context)
+          //push(context, TimesPage("home")) //Fazer algo
+          //Fazer algo
+          );
+    } else {
+      DialogUtils.showCustomDialog(context,
+          title: response.msg,
+          okBtnText: "Ok",
+          cancelBtnText: "",
+          okBtnFunction: () => Navigator.pop(context)
+          //push(context, TimesPage("home")) //Fazer algo
+          //Fazer algo
+          );
+
+      setState(() {
+        showProgress = false;
       });
+    }
+  }
+
+  _mudaCor() {
+    setState(() {
+      _color = Colors.green;
+    });
+  }
 }
 
 class Horarios {

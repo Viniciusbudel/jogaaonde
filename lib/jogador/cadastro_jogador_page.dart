@@ -281,7 +281,7 @@ class _HomePageState extends State<CadastrarJogadorPage> {
               validator: (text) => _validar(text, cpf),
               controller: controller,
               obscureText: false,
-              style: kFieldTextStyle,
+              style: kFieldGreenTextStyle,
               decoration: InputDecoration(
                 errorStyle: GoogleFonts.lato(
                   color: Colors.white,
@@ -295,7 +295,7 @@ class _HomePageState extends State<CadastrarJogadorPage> {
                   color: Colors.green[700],
                 ),
                 hintText: hint,
-                hintStyle: kHintTextStyle,
+                hintStyle: kHintGreenTextStyle,
               ),
             ),
             onFocusChange: (hasFocus) {
@@ -362,10 +362,10 @@ class _HomePageState extends State<CadastrarJogadorPage> {
 
       var jogador = Jogador(
         nome: _tNome.text,
-//        cpf: _tCpf.text
-//            .replaceAll(".", "")
-//            .replaceAll("-", "")
-//            .replaceAll("/", ""),
+       cpf: _tCpf.text
+           .replaceAll(".", "")
+           .replaceAll("-", "")
+           .replaceAll("/", ""),
         cep: _tCep.text,
         bairro: _tBairro.text,
         cidade: _tCidade.text,

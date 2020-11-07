@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:jogaaonde/home/home_page.dart';
+import 'package:jogaaonde/jogador/jogador.dart';
+import 'package:jogaaonde/jogador/jogador_bloc.dart';
+import 'package:jogaaonde/time/time.dart';
+import 'package:jogaaonde/utils/nav.dart';
+import 'package:jogaaonde/utils/text_error.dart';
 
 class JodadoresPartidasPage extends StatefulWidget {
+  Time time;
+
+  JodadoresPartidasPage(this.time);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -9,6 +20,16 @@ class JodadoresPartidasPage extends StatefulWidget {
 class _HomePageState extends State<JodadoresPartidasPage> {
   String dropdownValue = "";
   IconData _icon = Icons.sentiment_neutral;
+  List<Jogador> jogadores;
+
+  final _bloc = JogadorBloc();
+
+  @override
+  void initState() {
+    _bloc.getJogadoresByTimeId(widget.time.id.toString());
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,37 +80,52 @@ class _HomePageState extends State<JodadoresPartidasPage> {
                 ],
               ),
             ),
-
-            ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: 6,
-              itemBuilder: (BuildContext context, int index) {
-                return makeCard();
-              },
-            ),
-
+            _listPartidasRecentess(),
             Container(
-              padding: EdgeInsets.only(left: 16,right: 16),
+              padding: EdgeInsets.only(left: 16, right: 16),
               child: _buildCadastroBtn(),
             )
             //GridDashboard()
           ],
         ),
       ),
-
-//      floatingActionButton: FloatingActionButton.extended(
-//        icon: Icon(Icons.add),
-//
-//        label: Text("Cadastrar Time"),
-//
-//        backgroundColor: Colors.greenAccent[700],
-//        onPressed: () { print('Clicked'); },),
     );
   }
 
-  SafeArea makeListTile() {
-    return SafeArea(
+  _listPartidasRecentess() {
+    return StreamBuilder(
+        stream: _bloc.stream,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return TextError("Não foi possivel buscar os dados!");
+          }
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          jogadores = snapshot.data;
+          return RefreshIndicator(
+              onRefresh: _onRefresh,
+              child: _listViewPartidasRecentess(jogadores));
+          //child: PartidasRecentesListView(quadras, widget.origem));
+        });
+  }
+
+  _listViewPartidasRecentess(List<Jogador> jogadores) {
+    return ListView.builder(
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: jogadores.length,
+      itemBuilder: (BuildContext context, int index) {
+        return makeCard(jogadores[index]);
+      },
+    );
+  }
+
+  makeListTile(Jogador jogador) {
+    return GestureDetector(
+      //onTap: () => _onClickPartRecente(),
       child: ListTile(
           contentPadding:
               EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
@@ -98,27 +134,31 @@ class _HomePageState extends State<JodadoresPartidasPage> {
             decoration: new BoxDecoration(
                 border: new Border(
                     right: new BorderSide(width: 1.0, color: Colors.white24))),
-            child: Icon(Icons.person, color: Colors.white),
+            child: Icon(Icons.sports_soccer, color: Colors.white),
           ),
           title: Text(
-            "Cleiton Rasta",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            jogador.nome,
+            //c.ordemServico,
+            style: GoogleFonts.lato(
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
           ),
-          // subtitle: Text("Intermediate", style: TextStyle(color: Colors.white)),
-
-          subtitle: Row(
-            children: <Widget>[
-              //Icon(Icons.assignment, color: Colors.white70),
-              Text("LD", style: TextStyle(color: Colors.white))
-            ],
-          ),
-          trailing: GestureDetector(
-              onTap: () => _rateDialog(context), //PartidasRecentesPage
-              child: Icon(_icon, color: Colors.white, size: 30.0))),
+          subtitle: Container(
+              padding: EdgeInsets.only(top: 2),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    jogador.posicao,
+                    style: GoogleFonts.lato(fontSize: 14),
+                  ),
+                ],
+              )),
+          trailing: Icon(Icons.keyboard_arrow_right,
+              color: Colors.white, size: 30.0)),
     );
   }
 
-  makeCard() {
+  makeCard(Jogador jogador) {
     return Card(
       elevation: 8.0,
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
@@ -126,8 +166,8 @@ class _HomePageState extends State<JodadoresPartidasPage> {
         onTap: () => print('Clicado'),
         child: Container(
           //decoration: BoxDecoration(color: Color.fromRGBO(64, 75, 96, .9)),
-          decoration: BoxDecoration(color: Color(0xFF05290C)),
-          child: makeListTile(),
+          decoration: BoxDecoration(color: Colors.green),
+          child: makeListTile(jogador),
         ),
       ),
     );
@@ -201,5 +241,13 @@ class _HomePageState extends State<JodadoresPartidasPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _onRefresh() {
+    return _bloc.getJogadoresByTimeId(widget.time.id.toString());
+  }
+
+  Future<bool> _onBackPressed() async {
+    push(context, HomePage());
   }
 }

@@ -207,7 +207,7 @@ class _ListaEmpresaPageState extends State<ListaEmpresaPage> {
   makeListTile(index, context) {
     Empresa e = quadras[index];
     return GestureDetector(
-      onTap: () => push(context, ListarQuadraPage(e)),
+      onTap: () => push(context, ListarQuadraPage(e, widget.idTime)),
       child: ListTile(
           contentPadding:
               EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),

@@ -11,8 +11,9 @@ import 'package:jogaaonde/utils/text_error.dart';
 
 class ListarQuadraPage extends StatefulWidget {
   Empresa empresa;
+  String idTime;
 
-  ListarQuadraPage(this.empresa);
+  ListarQuadraPage(this.empresa,this.idTime);
 
   @override
   _ListarQuadraPageState createState() => _ListarQuadraPageState();
@@ -135,105 +136,8 @@ class _ListarQuadraPageState extends State<ListarQuadraPage> {
     );
   }
 
-  //     return Container(
-  //       padding: EdgeInsets.all(8),
-  //       child: GestureDetector(
-  //         onTap: () {
-  //           push(context, SelecionarData());
-  //         },
-  //         child: Card(
-  //           color: Color(0xFF05290C),
-  //           shape: RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(1),
-  //               side: BorderSide(color: Colors.white, width: 0.1)),
-  //           child: Row(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             mainAxisAlignment: MainAxisAlignment.start,
-  //             children: <Widget>[
-  //               Image.network(
-  //                 quadra.imagens[0],
-  //                 width: 150,
-  //                 height: 100,
-  //                 fit: BoxFit.fill,
-  //               ),
-  //               Container(
-  //                 padding: EdgeInsets.only(left: 16),
-  //                 child: Column(
-  //                     mainAxisAlignment: MainAxisAlignment.start,
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     children: <Widget>[
-  //                       Text(
-  //                         quadra.imagens[0],
-  //                         style: TextStyle(
-  //                           fontSize: 22,
-  //                           color: Colors.white,
-  //                           fontWeight: FontWeight.bold,
-  //                           fontFamily: 'OpenSans',
-  //                         ),
-  //                       ),
-  //                       Text(
-  //                         quadra.descricao,
-  //                         style:
-  //                             TextStyle(fontSize: 15, color: Colors.white70),
-  //                       ),
-  //                       Container(
-  //                         padding: EdgeInsets.only(top: 30),
-  //                         child: Text(
-  //                           "5km",
-  //                           style: TextStyle(
-  //                               fontSize: 15, color: Colors.white70),
-  //                         ),
-  //                       ),
-  //                     ]),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     );
-  //
-  //     return ListTile(
-  //       leading: Image.network(quadra.imagens[0]),
-  //       title: Text(
-  //         quadra.descricao,
-  //         style: TextStyle(fontSize: 22),
-  //       ),
-  //     );
-  //   },
-  // );
 
-  makeListTile(index, context) {
-    Quadra q = quadras[index];
-    return GestureDetector(
-      onTap: () => push(context, SelecionarData()),
-      child: ListTile(
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-          leading: Container(
-            padding: EdgeInsets.only(right: 12.0),
-            decoration: new BoxDecoration(
-                border: new Border(
-                    right: new BorderSide(width: 1.0, color: Colors.white24))),
-            child: Icon(Icons.attach_money, color: Colors.white),
-          ),
-          title: Text(
-            q.descricao,
-            //c.ordemServico,
-            style: GoogleFonts.lato(
-                color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          // subtitle: Text("Intermediate", style: GoogleFonts.lato(color: Colors.white)),
 
-          // subtitle: Row(
-          //   children: <Widget>[
-          //     //Icon(Icons.assignment, color: Colors.white70),
-          //     _textData(c),
-          //   ],
-          // ),
-          trailing: Icon(Icons.keyboard_arrow_right,
-              color: Colors.white, size: 30.0)),
-    );
-  }
 
   Padding _rowBuscar() {
     return Padding(
@@ -284,52 +188,48 @@ class _ListarQuadraPageState extends State<ListarQuadraPage> {
     );
   }
 
-  Card makeCard(int index, context) {
+  makeCard(int index, context) {
     Quadra quadra = quadras[index];
-    return Card(
-      color: Color(0xFF05290C),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(1),
-          side: BorderSide(color: Colors.white, width: 0.1)),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Image.network(
-            quadra.imagens[0],
-            width: 150,
-            height: 100,
-            fit: BoxFit.fill,
-          ),
-          Container(
-            padding: EdgeInsets.only(left: 16),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-//                  Text(
-//                    quadra.imagens[0],
-//                    style: TextStyle(
-//                      fontSize: 22,
-//                      color: Colors.white,
-//                      fontWeight: FontWeight.bold,
-//                      fontFamily: 'OpenSans',
-//                    ),
-//                  ),
-                  Text(
-                    quadra.descricao,
-                    style: TextStyle(fontSize: 20, color: Colors.white),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(top: 30),
-                    child: Text(
-                      "5km",
-                      style: TextStyle(fontSize: 15, color: Colors.white70),
+    return GestureDetector(
+      onTap: () => push(context, SelecionarData(widget.idTime,quadra.id.toString())),
+
+      child: Card(
+        color: Color(0xFF05290C),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(1),
+            side: BorderSide(color: Colors.white, width: 0.1)),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            quadra.imagem != null ?
+            Image.network(
+              quadra.imagem,
+              width: 150,
+              height: 100,
+              fit: BoxFit.fill,
+            ) : Container(),
+            Container(
+              padding: EdgeInsets.only(left: 16),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      quadra.descricao,
+                      style: TextStyle(fontSize: 20, color: Colors.white),
                     ),
-                  ),
-                ]),
-          ),
-        ],
+                    Container(
+                      padding: EdgeInsets.only(top: 30),
+                      child: Text(
+                        "5km",
+                        style: TextStyle(fontSize: 15, color: Colors.white70),
+                      ),
+                    ),
+                  ]),
+            ),
+          ],
+        ),
       ),
     );
   }

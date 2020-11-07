@@ -1,38 +1,43 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:jogaaonde/campeonato/campeonato_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:jogaaonde/empresa/empresa.dart';
+import 'package:jogaaonde/empresa/empresa_bloc.dart';
 import 'package:jogaaonde/home/home_page.dart';
-import 'package:jogaaonde/partidas_recentes/lista_partidas_recentes_page.dart';
+import 'package:jogaaonde/marcar_partida/selecionar_data_page.dart';
+import 'package:jogaaonde/partidas_recentes/jogadores_partida_page.dart';
+import 'package:jogaaonde/partidas_recentes/partidas_recentes.dart';
+import 'package:jogaaonde/partidas_recentes/partidas_recentes_bloc.dart';
+import 'package:jogaaonde/quadra/quadra.dart';
+import 'package:jogaaonde/quadra/quadra_bloc.dart';
+import 'package:jogaaonde/quadra/quadra_page.dart';
+import 'package:jogaaonde/social/social_page.dart';
 import 'package:jogaaonde/time/time.dart';
-import 'package:jogaaonde/time/time_bloc.dart';
-import 'package:jogaaonde/time/time_page.dart';
-import 'package:jogaaonde/utils/custom_dialog.dart';
+import 'package:jogaaonde/utils/constants.dart';
 import 'package:jogaaonde/utils/nav.dart';
-import 'package:jogaaonde/utils/prefs.dart';
 import 'package:jogaaonde/utils/text_error.dart';
 
-class ListarTimePage extends StatefulWidget {
-  String origem;
-  String idCampeonato;
+class ListaPartidasRecentesPage extends StatefulWidget {
+  Time time;
 
-  ListarTimePage(this.origem, {this.idCampeonato});
+  ListaPartidasRecentesPage(this.time);
 
   @override
-  _ListarTimePageState createState() => _ListarTimePageState();
+  _ListaPartidasRecentesPageState createState() =>
+      _ListaPartidasRecentesPageState();
 }
 
-class _ListarTimePageState extends State<ListarTimePage> {
-  final _bloc = TimeBloc();
-  List<Time> times;
-  String id = "";
-  final _tNome = TextEditingController();
+class _ListaPartidasRecentesPageState extends State<ListaPartidasRecentesPage> {
+  final _bloc = PartidasRecentesBloc();
+  DateFormat dateFormat = DateFormat("dd/MM/yyyy HH:mm:ss");
+  DateFormat hourFormat = DateFormat("HH:mm:ss");
+  List<PartidasRecentes> quadras;
 
   @override
   void initState() {
     // TODO: implement initState
-    _bloc.listarTimes();
-
-    loadData();
+    _bloc.getPartidasRecentesByTime(widget.time.id.toString());
     super.initState();
   }
 
@@ -63,7 +68,6 @@ class _ListarTimePageState extends State<ListarTimePage> {
                           push(context, HomePage());
                         },
                       ),
-
                       Padding(
                         padding: const EdgeInsets.only(left: 8),
                         child: Column(
@@ -78,7 +82,7 @@ class _ListarTimePageState extends State<ListarTimePage> {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              "Listar Time",
+                              "Listar Partidas Recentes",
                               style: GoogleFonts.lato(
                                   color: Color(0xffa29aac),
                                   fontSize: 14,
@@ -87,18 +91,11 @@ class _ListarTimePageState extends State<ListarTimePage> {
                           ],
                         ),
                       ),
-                      //                    IconButton(
-                      //                      alignment: Alignment.topCenter,
-                      //                      icon: Icon(Icons.list),
-                      //                      color: Colors.white70,
-                      //                      onPressed: () {},
-                      //                    )
                     ],
                   ),
                 ),
                 SizedBox(height: 10),
-                //_rowBuscar(),
-                _listTimes(),
+                _listPartidasRecentess(),
 
                 //GridDashboard()
               ],
@@ -111,7 +108,7 @@ class _ListarTimePageState extends State<ListarTimePage> {
     }
   }
 
-  _listTimes() {
+  _listPartidasRecentess() {
     return StreamBuilder(
         stream: _bloc.stream,
         builder: (context, snapshot) {
@@ -123,18 +120,19 @@ class _ListarTimePageState extends State<ListarTimePage> {
               child: CircularProgressIndicator(),
             );
           }
-          times = snapshot.data;
+          quadras = snapshot.data;
           return RefreshIndicator(
-              onRefresh: _onRefresh, child: _listViewTimes(times));
-          //child: TimeListView(times, widget.origem));
+              onRefresh: _onRefresh,
+              child: _listViewPartidasRecentess(quadras));
+          //child: PartidasRecentesListView(quadras, widget.origem));
         });
   }
 
-  _listViewTimes(List<Time> times) {
+  _listViewPartidasRecentess(List<PartidasRecentes> quadras) {
     return ListView.builder(
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: times.length,
+      itemCount: quadras.length,
       itemBuilder: (BuildContext context, int index) {
         return makeCard(index, context);
       },
@@ -142,51 +140,68 @@ class _ListarTimePageState extends State<ListarTimePage> {
   }
 
   makeListTile(index, context) {
-    Time c = times[index];
+    PartidasRecentes partRecentes = quadras[index];
     return GestureDetector(
-      onTap: () => _onClickTime(c),
+      onTap: () => _onClickPartRecente(),
       child: ListTile(
           contentPadding:
               EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          isThreeLine: true,
           leading: Container(
             padding: EdgeInsets.only(right: 12.0),
             decoration: new BoxDecoration(
                 border: new Border(
                     right: new BorderSide(width: 1.0, color: Colors.white24))),
-            child: Icon(
-                c.jogador_adm.toString() == id
-                    ? Icons.grade_sharp
-                    : Icons.person,
-                color: Colors.white),
+            child: Icon(Icons.sports_soccer, color: Colors.white),
           ),
           title: Text(
-            c.nome,
+            partRecentes.descricao,
+            //c.ordemServico,
             style: GoogleFonts.lato(
-                color: Colors.white, fontWeight: FontWeight.bold),
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
           ),
-          // subtitle: Text("Intermediate", style: GoogleFonts.lato(color: Colors.white)),
+          subtitle: Container(
+              padding: EdgeInsets.only(top: 2),
+              child: Column(
 
-          subtitle: Text(
-            c.descricao,
-            style: GoogleFonts.lato(
-                color: Colors.white, fontWeight: FontWeight.w300),
-          ),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    partRecentes.quadra_descricao,
+                    style: GoogleFonts.lato(fontSize: 14),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(top: 5),
+                    child: Text(
+                      _txtData(partRecentes),
+                      style: GoogleFonts.acme(fontSize: 15),
+                    ),
+                  ),
+                ],
+              )),
           trailing: Icon(Icons.keyboard_arrow_right,
               color: Colors.white, size: 30.0)),
     );
   }
 
+  String _txtData(PartidasRecentes partRecentes) {
+    var dataAbertura = DateTime.parse(partRecentes.data_abertura);
+    var dataFechamento = DateTime.parse(partRecentes.data_fechamento);
+
+    String dt_abertura = dateFormat.format(dataAbertura);
+    String dt_fechamento = hourFormat.format(dataFechamento);
+
+    return "$dt_abertura - $dt_fechamento";
+  }
+
   Card makeCard(int index, context) {
-    Time c = times[index];
+    PartidasRecentes c = quadras[index];
 
     return Card(
       elevation: 8.0,
       margin: new EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
       child: Container(
-        decoration: BoxDecoration(
-            color: c.jogador_adm.toString() == id
-                ? Colors.green[600]
-                : Colors.green[900]),
+        decoration: BoxDecoration(color: Colors.green),
         child: makeListTile(index, context),
       ),
     );
@@ -194,71 +209,20 @@ class _ListarTimePageState extends State<ListarTimePage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
-
     _bloc.dispose();
   }
 
   Future<void> _onRefresh() {
-    return _bloc.listarTimes();
+    return _bloc.getPartidasRecentesByTime(widget.time.id.toString());
   }
 
   Future<bool> _onBackPressed() async {
-    push(context, HomePage());
+    push(context, SocialPage());
   }
 
-  Future<void> loadData() async {
-    id = await Prefs.getString("id");
-  }
+  _onClickPartRecente() {
+    push(context, JodadoresPartidasPage(widget.time));
 
-  _onClickTime(Time time) async {
-    switch (widget.origem) {
-      case "campeonato":
-        _showDialogCampeonato(_insertTimeCampeonato, time);
-        break;
-      case "home":
-        push(context, TimePage(time));
-        break;
-      case "partidasRecentes":
-        push(context, ListaPartidasRecentesPage(time));
-        break;
-    }
-  }
-
-  Future _insertTimeCampeonato(Time c) async {
-    final _bloc = CampeonatoBloc();
-    final response =
-        await _bloc.insertTimeCampeonato(c.id.toString(), widget.idCampeonato);
-
-    if (response.ok) {
-      DialogUtils.showCustomDialog(context,
-          title: response.msg,
-          okBtnText: "Ok",
-          cancelBtnText: "",
-          okBtnFunction: () =>
-              push(context, ListarTimePage("home")) //Fazer algo
-          //Fazer algo
-          );
-    } else {
-      DialogUtils.showCustomDialog(context,
-          title: response.msg,
-          okBtnText: "Ok",
-          cancelBtnText: "",
-          okBtnFunction: () => Navigator.pop(context)
-          //push(context, JogadorsPage("home")) //Fazer algo
-          //Fazer algo
-          );
-    }
-  }
-
-  void _showDialogCampeonato(Future _insertTimeCampeonato(Time c), Time c) {
-    DialogUtils.showCustomDialog(
-      context,
-      title: "Deseja cadastrar time ao campeonato?",
-      okBtnText: "Ok",
-      cancelBtnText: "",
-      okBtnFunction: () => _insertTimeCampeonato(c),
-    );
   }
 }

@@ -6,7 +6,15 @@ final kHintTextStyle = GoogleFonts.lato(
   fontSize: 14.0,
   //fontWeight: FontWeight.w300,
   //color: Color(0xFF123c62),
-  color: Colors.green[400],
+  color: Colors.white,
+);
+
+final kHintGreenTextStyle = GoogleFonts.lato(
+  letterSpacing: 1.0,
+  fontSize: 14.0,
+  //fontWeight: FontWeight.w300,
+  //color: Color(0xFF123c62),
+  color: Colors.green[700],
 );
 
 final kFieldTextStyle = GoogleFonts.lato(
@@ -14,7 +22,14 @@ final kFieldTextStyle = GoogleFonts.lato(
   fontSize: 14.0,
   //fontWeight: FontWeight.w300,
   //color: Color(0xFF123c62),
-  color: Colors.green[400],
+  color: Colors.white,
+);
+final kFieldGreenTextStyle = GoogleFonts.lato(
+  letterSpacing: 1.0,
+  fontSize: 14.0,
+  //fontWeight: FontWeight.w300,
+  //color: Color(0xFF123c62),
+  color: Colors.green[700],
 );
 
 final kLabelStyle = GoogleFonts.lato(

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:jogaaonde/home/gridhome.dart';
 
-
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
-
 
 class _HomePageState extends State<HomePage> {
   @override
@@ -29,22 +27,20 @@ class _HomePageState extends State<HomePage> {
                     Text(
                       "Joga Aonde",
                       style: TextStyle(
-                              color: Colors.white,
+                          color: Colors.white,
                           fontFamily: 'OpenSans',
-
                           fontSize: 18,
-                              fontWeight: FontWeight.bold),
+                          fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
                       height: 4,
                     ),
                     Text(
                       "Home",
-                      style:  TextStyle(
-                              color: Color(0xffa29aac),
-                              fontSize: 14,
+                      style: TextStyle(
+                          color: Color(0xffa29aac),
+                          fontSize: 14,
                           fontFamily: 'OpenSans',
-
                           fontWeight: FontWeight.w600),
                     ),
                   ],
@@ -66,5 +62,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
 }

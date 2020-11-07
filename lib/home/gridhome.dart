@@ -37,27 +37,14 @@ class GridDashboard extends StatelessWidget {
     img: "assets/images/quit_128.png",
   );
 
-//  Items item6 = new Items(
-//    title: "Settings",
-//    subtitle: "",
-//    event: "2 Items",
-//    img: "assets/setting.png",
-//  );
-
   @override
   Widget build(BuildContext context) {
     List<Items> myList = [item1, item2, item3, item4, item5];
     var color = 0xFF3D6344;
     return Flexible(
         child: GridView.builder(
-
             itemCount: myList.length,
-            //childAspectRatio: 1.0,
             padding: EdgeInsets.only(left: 16, right: 16, top: 5),
-
-//          crossAxisCount: 2,
-//          crossAxisSpacing: 18,
-//          mainAxisSpacing: 18,
             gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2, crossAxisSpacing: 18, mainAxisSpacing: 18),
             itemBuilder: (context, index) {

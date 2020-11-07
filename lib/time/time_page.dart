@@ -41,7 +41,6 @@ class _HomePageState extends State<TimePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _bloc.getJogadoresByTimeId(widget.time.id.toString());
 
     _tNome.text = widget.time.nome;

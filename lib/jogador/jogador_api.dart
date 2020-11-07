@@ -75,7 +75,7 @@ class JogadorApi {
       final jsonResponse = json.decode(response.body);
 
       if (response.statusCode == 200) {
-        final jogadors = Jogador.fromJson(jsonResponse["content"]);
+        final jogadors = Jogador.fromJson(jsonResponse["content"][0]);
 
         return jogadors;
       }

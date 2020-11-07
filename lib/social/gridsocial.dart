@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:jogaaonde/campeonato/campeonato_page.dart';
 import 'package:jogaaonde/jogador/cadastro_jogador_page.dart';
 import 'package:jogaaonde/jogador/jogador.dart';
 import 'package:jogaaonde/jogador/jogador_bloc.dart';
 import 'package:jogaaonde/time/cadastrar_time_page.dart';
-import 'package:jogaaonde/time/lista_times_page.dart';
-import 'package:jogaaonde/partidas_recentes/partidas_recentes_page.dart';
 import 'package:jogaaonde/time/lista_times_page.dart';
 
 class GridSocial extends StatelessWidget {
@@ -20,24 +19,31 @@ class GridSocial extends StatelessWidget {
     event: "",
     img: "assets/images/novo_time_128.png",
   );
-  Items item3 = new Items(
+  Items item5 = new Items(
     title: "Perfil",
     subtitle: "Gerencie seus dados!",
     event: "",
     img: "assets/images/gerenciar_amigos_128.png",
   );
-  Items item4 = new Items(
+  Items item3 = new Items(
     title: "Partidas Recentes",
     subtitle: "",
     event: "",
     img: "assets/images/partidas_recentes_128.png",
   );
-  Items item5 = new Items(
-    title: "Sair",
-    subtitle: "Até logo!",
+  Items item4 = new Items(
+    title: "Campeonatos",
+    subtitle: "Jogue campeonatos regionais!",
     event: "",
-    img: "assets/images/quit_128.png",
+    img: "assets/images/campeonato_128.png",
   );
+
+  // Items item5 = new Items(
+  //   title: "Sair",
+  //   subtitle: "Até logo!",
+  //   event: "",
+  //   img: "assets/images/quit_128.png",
+  // );
 
 //  Items item6 = new Items(
 //    title: "Settings",
@@ -78,16 +84,19 @@ class GridSocial extends StatelessWidget {
                   onTap: () {
                     switch (index) {
                       case 0:
-                        (push(context, ListarTimePage()));
+                        (push(context, ListarTimePage("home")));
                         break;
                       case 1:
                         (push(context, NovoTime()));
                         break;
                       case 2:
-                        onClickAlterarPerfil(context);
+                        (push(context, ListarTimePage("partidasRecentes")));
                         break;
                       case 3:
-                        (push(context, PartidasRecentesPage()));
+                        (push(context, CampeonatoPage()));
+                        break;
+                      case 4:
+                        onClickAlterarPerfil(context);
                         break;
                     }
                   },
@@ -139,15 +148,12 @@ class GridSocial extends StatelessWidget {
   }
 
   Future<void> onClickAlterarPerfil(context) async {
-
     final _bloc = JogadorBloc();
     Jogador jogador = await _bloc.getJogador();
 
-    if (jogador != null){
+    if (jogador != null) {
       push(context, CadastrarJogadorPage(jogador));
-
     }
-
   }
 }
 

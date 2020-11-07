@@ -4,9 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:jogaaonde/home/home_page.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/time/time_bloc.dart';
+import 'package:jogaaonde/utils/checkbox_model.dart';
 import 'package:jogaaonde/utils/constants.dart';
 import 'package:jogaaonde/utils/custom_dialog.dart';
 import 'package:jogaaonde/utils/nav.dart';
+import 'package:jogaaonde/utils/widgets/checkbox_field.dart';
+import 'package:jogaaonde/utils/widgets/custom_checkbox.dart';
+import 'package:jogaaonde/utils/widgets/custom_text_field.dart';
 
 class NovoTime extends StatefulWidget {
   @override
@@ -14,9 +18,12 @@ class NovoTime extends StatefulWidget {
 }
 
 class _HomePageState extends State<NovoTime> {
-  String _dropdownValue = "";
+  String _dropdownValue;
   final _formKey = GlobalKey<FormState>();
-
+  CheckBoxModel aceitaIntegrantesCheck =
+      CheckBoxModel(texto: "Aceita Integrantes");
+  CheckBoxModel dispoParaJogosCheck =
+      CheckBoxModel(texto: "Disponível para Jogos");
 
   List<String> ufs = [
     " ",
@@ -119,13 +126,23 @@ class _HomePageState extends State<NovoTime> {
               padding: EdgeInsets.all(16),
               child: Column(
                 children: <Widget>[
-                  _buildNomeTF(),
+                  CustomTextField("Nome", "Digite um nome para seu time",
+                      _tNome, Icons.flag),
                   SizedBox(height: 20),
-                  _buildDescricao(),
+                  CustomTextField(
+                      "Descrição",
+                      "Digite uma descrição para seu time",
+                      _tDescricao,
+                      Icons.comment),
                   SizedBox(height: 20),
                   _dropDown(),
                   SizedBox(height: 20),
-                  _buildCidadeTF(),
+                  CustomTextField("Cidade", "Digite a cidade do time", _tCidade,
+                      Icons.location_city),
+                  SizedBox(height: 30),
+                  CheckBoxField(aceitaIntegrantesCheck),
+                  SizedBox(height: 30),
+                  CheckBoxField(dispoParaJogosCheck),
                   SizedBox(height: 20),
                   _buildCadastroBtn(),
                 ],
@@ -135,113 +152,6 @@ class _HomePageState extends State<NovoTime> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildNomeTF() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          'Nome do Time',
-          style: kLabelStyle,
-        ),
-        SizedBox(height: 10.0),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: kBoxDecorationStyleGreen,
-          height: 60.0,
-          child: TextField(
-            controller: _tNome,
-            keyboardType: TextInputType.emailAddress,
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'OpenSans',
-            ),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(
-                Icons.mode_edit,
-                color: Colors.white,
-              ),
-              hintText: 'De um nome para seu time!',
-              hintStyle: kHintTextStyle,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCidadeTF() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          'Cidade',
-          style: kLabelStyle,
-        ),
-        SizedBox(height: 10.0),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: kBoxDecorationStyleGreen,
-          height: 60.0,
-          child: TextField(
-            controller: _tCidade,
-            keyboardType: TextInputType.emailAddress,
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'OpenSans',
-            ),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(
-                Icons.location_city,
-                color: Colors.white,
-              ),
-              hintText: 'Digite cidade do seu time!',
-              hintStyle: kHintTextStyle,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDescricao() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          'Descrição',
-          style: kLabelStyle,
-        ),
-        SizedBox(height: 10.0),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: kBoxDecorationStyleGreen,
-          height: 60.0,
-          child: TextField(
-            controller: _tDescricao,
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'OpenSans',
-            ),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(
-                Icons.list,
-                color: Colors.white,
-              ),
-              hintText: 'De uma descrição para seu time!',
-              hintStyle: kHintTextStyle,
-            ),
-          ),
-        ),
-      ],
     );
   }
 
@@ -277,20 +187,27 @@ class _HomePageState extends State<NovoTime> {
       showProgress = true;
     });
 
+    if (dispoParaJogosCheck.checked) {
+      print("disponivel");
+    }
+    if (aceitaIntegrantesCheck.checked) {
+      print("aceita");
+    }
+
     var time = Time(
       nome: _tNome.text,
       cidade: _tCidade.text,
       uf: _dropdownValue,
       descricao: _tDescricao.text,
       escudo: "teste",
-      aceitaIntegrantes: true,
+      aceitaIntegrantes: aceitaIntegrantesCheck.checked,
     );
 
     final response = await _timeBloc.inserirTime(time);
 
     if (response.ok) {
       DialogUtils.showCustomDialog(context,
-          title: "Time Cadastrado com Sucesso!",
+          title: "Time Cadastrado com Sucesso",
           okBtnText: "Ok",
           cancelBtnText: "",
           okBtnFunction: () => Navigator.pop(context)

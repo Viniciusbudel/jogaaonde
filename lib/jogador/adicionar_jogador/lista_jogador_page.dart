@@ -249,7 +249,7 @@ class _HomePageState extends State<ListaJogadorPage> {
           title: response.msg,
           okBtnText: "Ok",
           cancelBtnText: "",
-          okBtnFunction: () => push(context, ListarTimePage()) //Fazer algo
+          okBtnFunction: () => push(context, ListarTimePage("home")) //Fazer algo
           //Fazer algo
           );
     } else {
