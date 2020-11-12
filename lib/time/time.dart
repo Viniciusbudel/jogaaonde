@@ -31,6 +31,8 @@ class Time {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    this.id != null ? data['id'] = this.id : null;
+
     //data['id'] = this.id;
     data['nome'] = this.nome;
     data['descricao'] = this.descricao;

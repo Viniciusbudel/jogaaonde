@@ -51,6 +51,17 @@ class TimeBloc extends SimpleBloc<List<Time>> {
       addError(e);
     }
   }
+  Future<List<Time>> listarTimesByCidade(String cidade) async {
+    try {
+      List<Time> response = await TimeApi.getTimeByCidade(cidade);
+
+      add(response);
+
+      return response;
+    } catch (e) {
+      addError(e);
+    }
+  }
 
 // Future<List<Time>> listarTimesPorNome(String nome) async {
 //   try {

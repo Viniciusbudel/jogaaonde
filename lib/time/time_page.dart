@@ -486,6 +486,7 @@ class _HomePageState extends State<TimePage> {
     });
 
     var time = Time(
+      id: widget.time.id,
       nome: _tNome.text,
       cidade: _tCidade.text,
       uf: _tUf.text,
@@ -494,7 +495,7 @@ class _HomePageState extends State<TimePage> {
       aceitaIntegrantes: true,
     );
 
-    final response = await _timeBloc.inserirTime(time);
+    final response = await _timeBloc.updtaeTime(time);
 
     if (response.ok) {
       DialogUtils.showCustomDialog(context,

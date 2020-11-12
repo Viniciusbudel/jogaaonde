@@ -38,6 +38,8 @@ dependencies:
   google_fonts: ^1.1.0
   via_cep: ^1.0.6
   cpfcnpj: ^1.0.3
+  mercadopago_sdk: ^1.2.0
+  mercado_pago_integration: ^1.1.7
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +76,8 @@ flutter:
     - assets/images/gerenciar_amigos_128.png
     - assets/images/partidas_recentes_128.png
     - assets/images/campeonato_128.png
+    - assets/images/buscar_time.png
+    - assets/images/procurar_partida.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

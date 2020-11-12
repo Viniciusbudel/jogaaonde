@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jogaaonde/empresa/empresa.dart';
 import 'package:jogaaonde/home/home_page.dart';
-import 'package:jogaaonde/marcar_partida/selecionar_data_page.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/partidas/marcar_partida/selecionar_data_page.dart';
 import 'package:jogaaonde/quadra/quadra.dart';
 import 'package:jogaaonde/quadra/quadra_bloc.dart';
 import 'package:jogaaonde/utils/constants.dart';
@@ -13,7 +13,7 @@ class ListarQuadraPage extends StatefulWidget {
   Empresa empresa;
   String idTime;
 
-  ListarQuadraPage(this.empresa,this.idTime);
+  ListarQuadraPage(this.empresa, this.idTime);
 
   @override
   _ListarQuadraPageState createState() => _ListarQuadraPageState();
@@ -92,7 +92,6 @@ class _ListarQuadraPageState extends State<ListarQuadraPage> {
                   ),
                 ),
                 SizedBox(height: 10),
-                _rowBuscar(),
                 _listQuadras(),
 
                 //GridDashboard()
@@ -136,99 +135,64 @@ class _ListarQuadraPageState extends State<ListarQuadraPage> {
     );
   }
 
-
-
-
-  Padding _rowBuscar() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 8, right: 8),
-      child: Container(
-        decoration: kBoxDecorationStyle,
-        child: Row(
-          children: [
-            Expanded(
-              flex: 7,
-              child: TextField(
-                controller: _tNome,
-                obscureText: false,
-                style: kFieldTextStyle,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.only(top: 14.0),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.orange[700],
-                  ),
-                  hintText: "Buscar por nome",
-                  hintStyle: kHintTextStyle,
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 3,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: RaisedButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      side: BorderSide(color: Colors.orange[400])),
-                  color: Colors.orange[700],
-                  onPressed: () => "",
-                  child: Text(
-                    "Buscar",
-                    style: GoogleFonts.lato(
-                        color: Colors.white, fontWeight: FontWeight.w300),
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
   makeCard(int index, context) {
     Quadra quadra = quadras[index];
-    return GestureDetector(
-      onTap: () => push(context, SelecionarData(widget.idTime,quadra.id.toString())),
-
-      child: Card(
-        color: Color(0xFF05290C),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(1),
-            side: BorderSide(color: Colors.white, width: 0.1)),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            quadra.imagem != null ?
-            Image.network(
-              quadra.imagem,
-              width: 150,
-              height: 100,
-              fit: BoxFit.fill,
-            ) : Container(),
-            Container(
-              padding: EdgeInsets.only(left: 16),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      quadra.descricao,
-                      style: TextStyle(fontSize: 20, color: Colors.white),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(top: 30),
-                      child: Text(
-                        "5km",
-                        style: TextStyle(fontSize: 15, color: Colors.white70),
-                      ),
-                    ),
-                  ]),
-            ),
-          ],
+    return Container(
+      padding: EdgeInsets.all(8),
+      child: GestureDetector(
+        onTap: () =>
+            push(context, SelecionarData(widget.idTime, quadra.id.toString())),
+        child: Card(
+          color: Color(0xFF05290C),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(1),
+              side: BorderSide(color: Colors.white, width: 0.1)),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              quadra.imagem != null
+                  ? Image.network(
+                      quadra.imagem,
+                      width: 150,
+                      height: 100,
+                      fit: BoxFit.fill,
+                    )
+                  : Container(),
+              Flexible(
+                child: Container(
+                  padding: EdgeInsets.only(left: 8),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          child: Text(
+                            quadra.descricao,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.lato(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(top: 3),
+                          child: Text(
+                            quadra.possuiCobertura
+                                ? "Quadra Coberta"
+                                : "Quadra Aberta",
+                            style: GoogleFonts.lato(
+                              color: Colors.white70,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ]),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

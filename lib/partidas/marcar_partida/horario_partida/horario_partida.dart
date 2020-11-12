@@ -3,8 +3,9 @@ class HorarioPartida {
   int quadraId;
   String dataAbertura;
   String dataFechamento;
-  double preco;
+  int preco;
   bool disponivel;
+  bool clicado = false;
   String criadoEm;
   String atualizadoEm;
 

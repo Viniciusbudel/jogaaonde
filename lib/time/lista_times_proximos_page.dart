@@ -1,28 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:jogaaonde/campeonato/campeonato_bloc.dart';
 import 'package:jogaaonde/home/home_page.dart';
-import 'package:jogaaonde/partidas/buscar_partida/lista_partidas_proximas.dart';
-import 'package:jogaaonde/partidas/partidas_recentes/lista_partidas_recentes_page.dart';
+import 'package:jogaaonde/time/lista_times_page.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/time/time_bloc.dart';
-import 'package:jogaaonde/time/time_page.dart';
+import 'package:jogaaonde/utils/constants.dart';
 import 'package:jogaaonde/utils/custom_dialog.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'package:jogaaonde/utils/prefs.dart';
 import 'package:jogaaonde/utils/text_error.dart';
 
-class ListarTimePage extends StatefulWidget {
-  String origem;
-  String idCampeonato;
-
-  ListarTimePage(this.origem, {this.idCampeonato});
-
+class ListarTimesProximosPage extends StatefulWidget {
   @override
-  _ListarTimePageState createState() => _ListarTimePageState();
+  _ListarTimesProximosPageState createState() =>
+      _ListarTimesProximosPageState();
 }
 
-class _ListarTimePageState extends State<ListarTimePage> {
+class _ListarTimesProximosPageState extends State<ListarTimesProximosPage> {
   final _bloc = TimeBloc();
   List<Time> times;
   String id = "";
@@ -31,7 +25,7 @@ class _ListarTimePageState extends State<ListarTimePage> {
   @override
   void initState() {
     // TODO: implement initState
-    _bloc.listarTimes();
+    _bloc.listarTimesByCidade("Curitiba");
 
     loadData();
     super.initState();
@@ -98,7 +92,7 @@ class _ListarTimePageState extends State<ListarTimePage> {
                   ),
                 ),
                 SizedBox(height: 10),
-                //_rowBuscar(),
+                _rowBuscar(),
                 _listTimes(),
 
                 //GridDashboard()
@@ -193,6 +187,67 @@ class _ListarTimePageState extends State<ListarTimePage> {
     );
   }
 
+  Padding _rowBuscar() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16),
+      child: Container(
+        decoration: kBoxDecorationStyle,
+        child: Row(
+          children: [
+            Expanded(
+              flex: 7,
+              child: TextField(
+                controller: _tNome,
+                obscureText: false,
+                style: GoogleFonts.lato(
+                  letterSpacing: 1.0,
+                  fontSize: 14.0,
+                  //fontWeight: FontWeight.w300,
+                  //color: Color(0xFF123c62),
+                  color: Colors.red[700],
+                ),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.only(top: 14.0),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.red[700],
+                  ),
+                  hintText: "Buscar por cidade",
+                  hintStyle: GoogleFonts.lato(
+                    letterSpacing: 1.0,
+                    fontSize: 14.0,
+                    //fontWeight: FontWeight.w300,
+                    //color: Color(0xFF123c62),
+                    color: Colors.red[700],
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      side: BorderSide(color: Colors.red[400])),
+                  color: Colors.red[700],
+                  onPressed: () => _bloc.listarTimesByCidade(_tNome.text),
+                  child: Text(
+                    "Buscar",
+                    style: GoogleFonts.lato(
+                        color: Colors.white, fontWeight: FontWeight.w300),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -202,7 +257,7 @@ class _ListarTimePageState extends State<ListarTimePage> {
   }
 
   Future<void> _onRefresh() {
-    return _bloc.listarTimes();
+    return _bloc.listarTimesByCidade("Curitiba");
   }
 
   Future<bool> _onBackPressed() async {
@@ -214,26 +269,23 @@ class _ListarTimePageState extends State<ListarTimePage> {
   }
 
   _onClickTime(Time time) async {
-    switch (widget.origem) {
-      case "campeonato":
-        _showDialogCampeonato(_insertTimeCampeonato, time);
-        break;
-      case "home":
-        push(context, TimePage(time));
-        break;
-      case "partidasRecentes":
-        push(context, ListaPartidasRecentesPage(time));
-        break;
-      case "procurarPartida":
-        push(context, ListaPartidasProximasPage(time));
-        break;
-    }
+    // switch (widget.origem) {
+    //   case "campeonato":
+    _showDialogEntrarTime(time);
+    //     break;
+    //   case "home":
+    //     push(context, TimePage(time));
+    //     break;
+    //   case "partidasRecentes":
+    //     push(context, ListaPartidasRecentesPage(time));
+    //     break;
+    // }
   }
 
-  Future _insertTimeCampeonato(Time c) async {
-    final _bloc = CampeonatoBloc();
-    final response =
-        await _bloc.insertTimeCampeonato(c.id.toString(), widget.idCampeonato);
+  Future _joinTime(Time time) async {
+    id = await Prefs.getString("id");
+
+    final response = await _bloc.addJogadorTime(id, time.id);
 
     if (response.ok) {
       DialogUtils.showCustomDialog(context,
@@ -256,13 +308,13 @@ class _ListarTimePageState extends State<ListarTimePage> {
     }
   }
 
-  void _showDialogCampeonato(Future _insertTimeCampeonato(Time c), Time c) {
+  void _showDialogEntrarTime( Time c) {
     DialogUtils.showCustomDialog(
       context,
-      title: "Deseja cadastrar time ao campeonato?",
+      title: "Deseja juntar-se ao time?",
       okBtnText: "Ok",
       cancelBtnText: "",
-      okBtnFunction: () => _insertTimeCampeonato(c),
+      okBtnFunction: () => _joinTime(c),
     );
   }
 }

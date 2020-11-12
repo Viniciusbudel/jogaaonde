@@ -1,6 +1,4 @@
 
-import 'package:jogaaonde/fifa_time/fifa_time.dart';
-
 class Jogador {
   String id;
   String nome;
@@ -21,7 +19,7 @@ class Jogador {
   int fifa_times_id;
   String senha;
   String posicao;
-  String avaliacao;
+  double avaliacao;
 
   Jogador({this.id,
     this.nome,

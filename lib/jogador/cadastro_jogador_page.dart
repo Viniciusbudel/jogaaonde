@@ -1,7 +1,6 @@
 import 'package:cpfcnpj/cpfcnpj.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:jogaaonde/fifa_time/fifa_time.dart';
 import 'package:jogaaonde/home/home_page.dart';
 import 'package:jogaaonde/jogador/jogador.dart';
 import 'package:jogaaonde/jogador/jogador_bloc.dart';
@@ -358,7 +357,6 @@ class _HomePageState extends State<CadastrarJogadorPage> {
         showProgress = true;
       });
 
-      var fifa = FifaTime(id: "1");
 
       var jogador = Jogador(
         nome: _tNome.text,

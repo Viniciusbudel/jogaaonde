@@ -5,6 +5,7 @@ import 'package:jogaaonde/jogador/jogador.dart';
 import 'package:jogaaonde/jogador/jogador_bloc.dart';
 import 'package:jogaaonde/time/cadastrar_time_page.dart';
 import 'package:jogaaonde/time/lista_times_page.dart';
+import 'package:jogaaonde/time/lista_times_proximos_page.dart';
 
 class GridSocial extends StatelessWidget {
   Items item1 = new Items(
@@ -19,12 +20,7 @@ class GridSocial extends StatelessWidget {
     event: "",
     img: "assets/images/novo_time_128.png",
   );
-  Items item5 = new Items(
-    title: "Perfil",
-    subtitle: "Gerencie seus dados!",
-    event: "",
-    img: "assets/images/gerenciar_amigos_128.png",
-  );
+
   Items item3 = new Items(
     title: "Partidas Recentes",
     subtitle: "",
@@ -36,6 +32,18 @@ class GridSocial extends StatelessWidget {
     subtitle: "Jogue campeonatos regionais!",
     event: "",
     img: "assets/images/campeonato_128.png",
+  );
+  Items item5 = new Items(
+    title: "Procurar Partida",
+    subtitle: "Procure partidas próximas!",
+    event: "",
+    img: "assets/images/procurar_partida.png",
+  );
+  Items item6 = new Items(
+    title: "Encontrar Time",
+    subtitle: "Junte-se a times!",
+    event: "",
+    img: "assets/images/buscar_time.png",
   );
 
   // Items item5 = new Items(
@@ -54,7 +62,7 @@ class GridSocial extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Items> myList = [item1, item2, item3, item4, item5];
+    List<Items> myList = [item1, item2, item3, item4, item5, item6];
     var color = 0xFF3D6344;
     return Flexible(
         child: GridView.builder(
@@ -96,7 +104,10 @@ class GridSocial extends StatelessWidget {
                         (push(context, CampeonatoPage()));
                         break;
                       case 4:
-                        onClickAlterarPerfil(context);
+                        (push(context, ListarTimePage("procurarPartida")));
+                        break;
+                      case 5:
+                        (push(context, ListarTimesProximosPage()));
                         break;
                     }
                   },
@@ -145,15 +156,6 @@ class GridSocial extends StatelessWidget {
                 ),
               );
             }));
-  }
-
-  Future<void> onClickAlterarPerfil(context) async {
-    final _bloc = JogadorBloc();
-    Jogador jogador = await _bloc.getJogador();
-
-    if (jogador != null) {
-      push(context, CadastrarJogadorPage(jogador));
-    }
   }
 }
 

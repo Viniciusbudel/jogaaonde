@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:jogaaonde/empresa/lista_empresa_page.dart';
-import 'package:jogaaonde/marcar_partida/selecionar_time_page.dart';
+import 'package:jogaaonde/jogador/cadastro_jogador_page.dart';
+import 'package:jogaaonde/jogador/jogador.dart';
+import 'package:jogaaonde/jogador/jogador_bloc.dart';
+import 'package:jogaaonde/login/login_page.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/partidas/marcar_partida/selecionar_time_page.dart';
+import 'package:jogaaonde/pagamento/pagamento_teste.dart';
 import 'package:jogaaonde/quadra/quadra_page.dart';
 import 'package:jogaaonde/social/social_page.dart';
-
 
 class GridDashboard extends StatelessWidget {
   Items item1 = new Items(
@@ -25,10 +29,10 @@ class GridDashboard extends StatelessWidget {
     img: "assets/images/social_128.png",
   );
   Items item4 = new Items(
-    title: "Configurações",
-    subtitle: "",
+    title: "Perfil",
+    subtitle: "Gerencie seus dados!",
     event: "",
-    img: "assets/images/config_128.png",
+    img: "assets/images/gerenciar_amigos_128.png",
   );
   Items item5 = new Items(
     title: "Sair",
@@ -64,7 +68,7 @@ class GridDashboard extends StatelessWidget {
                   onTap: () {
                     switch (index) {
                       case 0:
-                      // do something
+                        (push(context, PagamentoTeste()));
                         break;
                       case 1:
                         (push(context, SelecionarTimePage()));
@@ -73,12 +77,14 @@ class GridDashboard extends StatelessWidget {
                         (push(context, SocialPage()));
                         break;
                       case 3:
-                        _configDialog(context);
+                        onClickAlterarPerfil(context);
+                        break;
+                      case 4:
+                        (push(context, LoginScreen()));
                         break;
                     }
                   },
                   child: Column(
-
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Image.asset(
@@ -118,15 +124,21 @@ class GridDashboard extends StatelessWidget {
                             fontFamily: 'OpenSans',
                             fontWeight: FontWeight.w600),
                       ),
-
                     ],
                   ),
                 ),
               );
             }));
   }
-}
+  Future<void> onClickAlterarPerfil(context) async {
+    final _bloc = JogadorBloc();
+    Jogador jogador = await _bloc.getJogador();
 
+    if (jogador != null) {
+      push(context, CadastrarJogadorPage(jogador));
+    }
+  }
+}
 
 _configDialog(BuildContext context) async {
   return showDialog(
@@ -134,16 +146,19 @@ _configDialog(BuildContext context) async {
       builder: (context) {
         return new AlertDialog(
           title: Text('Avalie sua ultima partida!'),
-
           actions: <Widget>[
             new FlatButton(
-              child: new Text('Cancelar',style: TextStyle(color: Colors.green)),
+              child:
+                  new Text('Cancelar', style: TextStyle(color: Colors.green)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             new FlatButton(
-              child: new Text('Avaliar',style: TextStyle(color: Colors.green),),
+              child: new Text(
+                'Avaliar',
+                style: TextStyle(color: Colors.green),
+              ),
               onPressed: () {
                 //_validaSenha(context, "Abre_Configuracao", ConfigPage(),"Senha inválida");
               },

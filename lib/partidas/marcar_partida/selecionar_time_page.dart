@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jogaaonde/empresa/lista_empresa_page.dart';
 import 'package:jogaaonde/home/home_page.dart';
-import 'package:jogaaonde/marcar_partida/selecionar_data_page.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/partidas/marcar_partida/selecionar_data_page.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/time/time_bloc.dart';
 import 'package:jogaaonde/time/time_page.dart';

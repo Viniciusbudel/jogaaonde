@@ -49,7 +49,7 @@ class TimeApi {
         "Content-Type": "application/json",
         "Authorization": "Bearer ${token}"
       };
-      final response = await http.post(url, body: jsonUser, headers: headers);
+      final response = await http.put(url, body: jsonUser, headers: headers);
 
       Map mapResponse = json.decode(response.body);
 
@@ -64,7 +64,7 @@ class TimeApi {
       print("erro no login $error > $exception");
 
       return ApiResponse.error(
-          "Não foi possivel realizar o login erro inesperado");
+          "Não foi possivel alterar o time!");
     }
   }
 
@@ -73,6 +73,33 @@ class TimeApi {
       String token = await Prefs.getString("token");
 
       var url = 'https://jogaaonde.com.br/jogador/time/me';
+
+      Map<String, String> headers = {"Authorization": "Bearer ${token}"};
+
+      final response = await http.get(url, headers: headers);
+
+      Map mapResponse = json.decode(response.body);
+      List list = mapResponse["content"];
+
+      if (response.statusCode == 200) {
+        final quadras = list.map<Time>((map) => Time.fromJson(map)).toList();
+
+        return quadras;
+      }
+
+      return null;
+    } catch (error, exception) {
+      print("erro no login $error > $exception");
+
+      return null;
+    }
+  }
+
+  static Future<List<Time>> getTimeByCidade(String cidade) async {
+    try {
+      String token = await Prefs.getString("token");
+
+      var url = 'https://jogaaonde.com.br/jogador/time/buscar?cidade=$cidade';
 
       Map<String, String> headers = {"Authorization": "Bearer ${token}"};
 

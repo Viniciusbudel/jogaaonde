@@ -4,7 +4,7 @@ import 'package:jogaaonde/campeonato/lista_campeonatos_page.dart';
 import 'package:jogaaonde/empresa/empresa.dart';
 import 'package:jogaaonde/empresa/empresa_bloc.dart';
 import 'package:jogaaonde/home/home_page.dart';
-import 'package:jogaaonde/marcar_partida/selecionar_data_page.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/partidas/marcar_partida/selecionar_data_page.dart';
 import 'package:jogaaonde/quadra/quadra.dart';
 import 'package:jogaaonde/quadra/quadra_bloc.dart';
 import 'package:jogaaonde/quadra/quadra_page.dart';

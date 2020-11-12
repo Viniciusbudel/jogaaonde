@@ -1,9 +1,6 @@
 import 'dart:convert';
 
-import 'package:jogaaonde/empresa/empresa.dart';
-import 'package:jogaaonde/marcar_partida/cadastrar_partida.dart';
-import 'package:jogaaonde/quadra/quadra.dart';
-import 'package:jogaaonde/time/time.dart';
+import 'package:jogaaonde/partidas/marcar_partida/cadastrar_partida.dart';
 import 'package:jogaaonde/utils/api_response.dart';
 import 'package:jogaaonde/utils/prefs.dart';
 import 'package:http/http.dart' as http;

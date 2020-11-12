@@ -4,14 +4,18 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:jogaaonde/home/home_page.dart';
 import 'package:jogaaonde/jogador/jogador.dart';
 import 'package:jogaaonde/jogador/jogador_bloc.dart';
+import 'package:jogaaonde/partidas/partidas_recentes/avaliacao_jogador.dart';
+import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes_api.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'package:jogaaonde/utils/text_error.dart';
+import 'package:jogaaonde/utils/widgets/custom_button.dart';
 
 class JodadoresPartidasPage extends StatefulWidget {
   Time time;
+  int idPartida;
 
-  JodadoresPartidasPage(this.time);
+  JodadoresPartidasPage(this.time, this.idPartida);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -21,7 +25,6 @@ class _HomePageState extends State<JodadoresPartidasPage> {
   String dropdownValue = "";
   IconData _icon = Icons.sentiment_neutral;
   List<Jogador> jogadores;
-
   final _bloc = JogadorBloc();
 
   @override
@@ -42,48 +45,50 @@ class _HomePageState extends State<JodadoresPartidasPage> {
             SizedBox(
               height: 60,
             ),
+
             Padding(
-              padding: EdgeInsets.only(left: 16, right: 16),
+              padding: EdgeInsets.only(left: 8, right: 8),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        "Joga Aonde",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'OpenSans',
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      Text(
-                        "Partidas Recentes",
-                        style: TextStyle(
-                            color: Color(0xffa29aac),
-                            fontSize: 14,
-                            fontFamily: 'OpenSans',
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ],
-                  ),
                   IconButton(
                     alignment: Alignment.topCenter,
-                    icon: Icon(Icons.list),
+                    icon: Icon(Icons.arrow_back_ios),
                     color: Colors.white70,
-                    onPressed: () {},
-                  )
+                    onPressed: () {
+                      push(context, HomePage());
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          "Joga Aonde",
+                          style: GoogleFonts.lato(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          "Listar Partidas Recentes",
+                          style: GoogleFonts.lato(
+                              color: Color(0xffa29aac),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
             _listPartidasRecentess(),
             Container(
               padding: EdgeInsets.only(left: 16, right: 16),
-              child: _buildCadastroBtn(),
+              child: CustomButton("CADASTRAR", _onClickConfirmarAvalicao),
             )
             //GridDashboard()
           ],
@@ -118,15 +123,16 @@ class _HomePageState extends State<JodadoresPartidasPage> {
       shrinkWrap: true,
       itemCount: jogadores.length,
       itemBuilder: (BuildContext context, int index) {
-        return makeCard(jogadores[index]);
+        return makeCard(index);
       },
     );
   }
 
   makeListTile(Jogador jogador) {
-    return GestureDetector(
-      //onTap: () => _onClickPartRecente(),
-      child: ListTile(
+    try {
+      return GestureDetector(
+        //onTap: () => _onClickPartRecente(),
+        child: ListTile(
           contentPadding:
               EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           leading: Container(
@@ -149,23 +155,67 @@ class _HomePageState extends State<JodadoresPartidasPage> {
                 children: [
                   Text(
                     jogador.posicao,
-                    style: GoogleFonts.lato(fontSize: 14),
+                    style: GoogleFonts.lato(fontSize: 16),
                   ),
                 ],
               )),
-          trailing: Icon(Icons.keyboard_arrow_right,
-              color: Colors.white, size: 30.0)),
-    );
+          trailing: _iconAvaliacao(jogador),
+          onTap: () => _rateDialog(context, jogador),
+        ),
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 
-  makeCard(Jogador jogador) {
+  Icon _iconAvaliacao(Jogador jogador) {
+    try {
+      if (jogador.avaliacao == null) {
+        return Icon(Icons.sentiment_neutral, color: Colors.white, size: 30.0);
+      } else {
+        switch (jogador.avaliacao.toString()) {
+          case "1.0":
+            return Icon(Icons.sentiment_very_dissatisfied,
+                color: Colors.white, size: 30.0);
+
+            break;
+          case "2.0":
+            return Icon(Icons.sentiment_dissatisfied,
+                color: Colors.white, size: 30.0);
+
+            break;
+          case "3.0":
+            return Icon(Icons.sentiment_neutral,
+                color: Colors.white, size: 30.0);
+
+            break;
+          case "4.0":
+            return Icon(Icons.sentiment_satisfied,
+                color: Colors.white, size: 30.0);
+
+            break;
+          case "5.0":
+            return Icon(Icons.sentiment_very_satisfied,
+                color: Colors.white, size: 30.0);
+            break;
+          default:
+            return Icon(Icons.sentiment_neutral,
+                color: Colors.white, size: 30.0);
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  makeCard(index) {
+    Jogador jogador = jogadores[index];
     return Card(
       elevation: 8.0,
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: GestureDetector(
         onTap: () => print('Clicado'),
         child: Container(
-          //decoration: BoxDecoration(color: Color.fromRGBO(64, 75, 96, .9)),
           decoration: BoxDecoration(color: Colors.green),
           child: makeListTile(jogador),
         ),
@@ -173,11 +223,12 @@ class _HomePageState extends State<JodadoresPartidasPage> {
     );
   }
 
-  _rateDialog(BuildContext context) async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return new AlertDialog(
+  _rateDialog(BuildContext context, jogador) async {
+    try {
+      return showDialog(
+          context: context,
+          builder: (context) {
+            return new AlertDialog(
               title: Text('Avalie Jogador'),
               content: RatingBar(
                   initialRating: 3,
@@ -212,35 +263,20 @@ class _HomePageState extends State<JodadoresPartidasPage> {
                     }
                   },
                   onRatingUpdate: (rating) {
-                    setState() => _icon = Icons.sentiment_very_satisfied;
-                  }));
-        });
-  }
-
-  Widget _buildCadastroBtn() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 25.0),
-      width: double.infinity,
-      child: RaisedButton(
-        elevation: 5.0,
-        onPressed: () => print('Login Button Pressed'),
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        color: Colors.white,
-        child: Text(
-          'CONFIRMAR AVALIAÇÃO',
-          style: TextStyle(
-            color: Colors.greenAccent[400],
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'OpenSans',
-          ),
-        ),
-      ),
-    );
+                    jogador.avaliacao = rating;
+                  }),
+              actions: [
+                FlatButton(
+                  child: Text("Ok",
+                      style: GoogleFonts.lato(color: Colors.deepOrange)),
+                  onPressed: () => _okBtnFunction(jogador),
+                )
+              ],
+            );
+          });
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> _onRefresh() {
@@ -249,5 +285,41 @@ class _HomePageState extends State<JodadoresPartidasPage> {
 
   Future<bool> _onBackPressed() async {
     push(context, HomePage());
+  }
+
+  _okBtnFunction(jogador) {
+    Navigator.of(this.context).pop();
+
+    setState(() {
+      jogador;
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+
+    _bloc.dispose();
+  }
+
+  _onClickConfirmarAvalicao() {
+    try {
+      List<AvaliacaoJogador> avaliacoesJogador = List();
+
+      jogadores.forEach((element) {
+        AvaliacaoJogador avaliacaoJogador = AvaliacaoJogador();
+
+        avaliacaoJogador.jogadorId = int.parse(element.id);
+        avaliacaoJogador.nota = element.avaliacao.toInt();
+
+        avaliacoesJogador.add(avaliacaoJogador);
+      });
+
+      PartidasRecentesApi.insertAvaliacaoJogador(
+          avaliacoesJogador, widget.idPartida.toString());
+    } catch (e) {
+      print(e);
+    }
   }
 }

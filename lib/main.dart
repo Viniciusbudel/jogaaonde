@@ -5,6 +5,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  ThemeData _baseTheme = ThemeData(
+    //fontFamily: "Roboto",
+    canvasColor: Colors.transparent,
+  );
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -14,6 +19,7 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate
       ],
       supportedLocales: [const Locale('pt', 'BR')],
+      theme:      _baseTheme ,
       title: 'Flutter Login UI',
       debugShowCheckedModeBanner: false,
       home: LoginScreen(),

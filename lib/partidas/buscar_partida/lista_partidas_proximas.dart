@@ -1,34 +1,41 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:jogaaonde/empresa/empresa.dart';
-import 'package:jogaaonde/empresa/empresa_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:jogaaonde/home/home_page.dart';
-import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/partidas/marcar_partida/selecionar_data_page.dart';
-import 'package:jogaaonde/quadra/quadra.dart';
-import 'package:jogaaonde/quadra/quadra_bloc.dart';
-import 'package:jogaaonde/quadra/quadra_page.dart';
+import 'package:jogaaonde/partidas/partida.dart';
+import 'package:jogaaonde/partidas/partidas_recentes/jogadores_partida_page.dart';
+import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes.dart';
+import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes_api.dart';
+import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes_bloc.dart';
+import 'package:jogaaonde/social/social_page.dart';
+import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/utils/constants.dart';
+import 'package:jogaaonde/utils/custom_dialog.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'package:jogaaonde/utils/text_error.dart';
 
-class ListaEmpresaPage extends StatefulWidget {
-  String idTime;
+class ListaPartidasProximasPage extends StatefulWidget {
+  Time time;
 
-  ListaEmpresaPage(this.idTime);
+  ListaPartidasProximasPage(this.time);
 
   @override
-  _ListaEmpresaPageState createState() => _ListaEmpresaPageState();
+  _ListaPartidasProximasPageState createState() =>
+      _ListaPartidasProximasPageState();
 }
 
-class _ListaEmpresaPageState extends State<ListaEmpresaPage> {
-  final _bloc = EmpresaBloc();
-  List<Empresa> quadras;
+class _ListaPartidasProximasPageState extends State<ListaPartidasProximasPage> {
+  final _bloc = PartidasRecentesBloc();
+  DateFormat dateFormat = DateFormat("dd/MM/yyyy HH:mm:ss");
+  DateFormat hourFormat = DateFormat("HH:mm:ss");
+  List<PartidasRecentes> quadras;
   final _tNome = TextEditingController();
 
   @override
   void initState() {
     // TODO: implement initState
-    _bloc.getEmpresaByCidade("Curitiba");
+    _bloc.getPartidasAtivasByCidade(widget.time.cidade);
     super.initState();
   }
 
@@ -59,7 +66,6 @@ class _ListaEmpresaPageState extends State<ListaEmpresaPage> {
                           push(context, HomePage());
                         },
                       ),
-
                       Padding(
                         padding: const EdgeInsets.only(left: 8),
                         child: Column(
@@ -74,7 +80,7 @@ class _ListaEmpresaPageState extends State<ListaEmpresaPage> {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              "Listar Empresa",
+                              "Listar Partidas Próximas",
                               style: GoogleFonts.lato(
                                   color: Color(0xffa29aac),
                                   fontSize: 14,
@@ -86,9 +92,9 @@ class _ListaEmpresaPageState extends State<ListaEmpresaPage> {
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 10),
                 _rowBuscar(),
-                _listEmpresas(),
+                _listPartidasRecentess(),
 
                 //GridDashboard()
               ],
@@ -101,7 +107,7 @@ class _ListaEmpresaPageState extends State<ListaEmpresaPage> {
     }
   }
 
-  _listEmpresas() {
+  _listPartidasRecentess() {
     return StreamBuilder(
         stream: _bloc.stream,
         builder: (context, snapshot) {
@@ -115,12 +121,13 @@ class _ListaEmpresaPageState extends State<ListaEmpresaPage> {
           }
           quadras = snapshot.data;
           return RefreshIndicator(
-              onRefresh: _onRefresh, child: _listViewEmpresas(quadras));
-          //child: EmpresaListView(quadras, widget.origem));
+              onRefresh: _onRefresh,
+              child: _listViewPartidasRecentess(quadras));
+          //child: PartidasRecentesListView(quadras, widget.origem));
         });
   }
 
-  _listViewEmpresas(List<Empresa> quadras) {
+  _listViewPartidasRecentess(List<PartidasRecentes> quadras) {
     return ListView.builder(
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
@@ -132,30 +139,67 @@ class _ListaEmpresaPageState extends State<ListaEmpresaPage> {
   }
 
   makeListTile(index, context) {
-    Empresa e = quadras[index];
+    PartidasRecentes partRecentes = quadras[index];
     return GestureDetector(
-      onTap: () => push(context, ListarQuadraPage(e, widget.idTime)),
+      onTap: () => _onClickPartRecente(partRecentes),
       child: ListTile(
           contentPadding:
-              EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          isThreeLine: true,
           leading: Container(
             padding: EdgeInsets.only(right: 12.0),
             decoration: new BoxDecoration(
                 border: new Border(
                     right: new BorderSide(width: 1.0, color: Colors.white24))),
-            child: Icon(Icons.work, color: Colors.white),
+            child: Icon(Icons.sports_soccer, color: Colors.white),
           ),
           title: Text(
-            e.nomeFantasia,
+            partRecentes.descricao,
             //c.ordemServico,
             style: GoogleFonts.lato(
-                color: Colors.white, fontWeight: FontWeight.bold),
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
           ),
-          subtitle: Text(e.cidade,
-              style: GoogleFonts.lato(color: Colors.white)),
-
+          subtitle: Container(
+              padding: EdgeInsets.only(top: 2),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    partRecentes.quadra_descricao,
+                    style: GoogleFonts.lato(fontSize: 14),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(top: 5),
+                    child: Text(
+                      _txtData(partRecentes),
+                      style: GoogleFonts.acme(fontSize: 15),
+                    ),
+                  ),
+                ],
+              )),
           trailing: Icon(Icons.keyboard_arrow_right,
               color: Colors.white, size: 30.0)),
+    );
+  }
+
+  String _txtData(PartidasRecentes partRecentes) {
+    var dataAbertura = DateTime.parse(partRecentes.data_abertura);
+    var dataFechamento = DateTime.parse(partRecentes.data_fechamento);
+
+    String dt_abertura = dateFormat.format(dataAbertura);
+    String dt_fechamento = hourFormat.format(dataFechamento);
+
+    return "$dt_abertura - $dt_fechamento";
+  }
+
+  Card makeCard(int index, context) {
+    return Card(
+      elevation: 8.0,
+      margin: new EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+      child: Container(
+        decoration: BoxDecoration(color: Colors.green),
+        child: makeListTile(index, context),
+      ),
     );
   }
 
@@ -205,7 +249,7 @@ class _ListaEmpresaPageState extends State<ListaEmpresaPage> {
                       borderRadius: BorderRadius.circular(10.0),
                       side: BorderSide(color: Colors.red[400])),
                   color: Colors.red[700],
-                  onPressed: () => _bloc.getEmpresaByCidade(_tNome.text),
+                  onPressed: () => _bloc.getPartidasAtivasByCidade(_tNome.text),
                   child: Text(
                     "Buscar",
                     style: GoogleFonts.lato(
@@ -220,31 +264,47 @@ class _ListaEmpresaPageState extends State<ListaEmpresaPage> {
     );
   }
 
-  Card makeCard(int index, context) {
-
-    return Card(
-      elevation: 8.0,
-      margin: new EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-      child: Container(
-        decoration: BoxDecoration(color: Colors.green),
-        child: makeListTile(index, context),
-      ),
-    );
-  }
-
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
-
     _bloc.dispose();
   }
 
   Future<void> _onRefresh() {
-    return _bloc.getEmpresaByCidade("Curitiba");
+    return _bloc.getPartidasRecentesByTime(widget.time.id.toString());
   }
 
   Future<bool> _onBackPressed() async {
-    push(context, HomePage());
+    push(context, SocialPage());
+  }
+
+  _onClickPartRecente(PartidasRecentes p) async {
+    Partida partida = Partida(
+        id: p.id,
+        descricao: p.descricao,
+        convidadoTimeId: widget.time.id,
+        aceitaTime: false,
+        horarioQuadraId: p.horarioQuadraId);
+
+    final resposne = await PartidasRecentesApi.updatePartida(partida);
+    if (resposne.ok) {
+      DialogUtils.showCustomDialog(context,
+          title: "Seu time se juntou a partida com Sucesso!",
+          okBtnText: "Ok",
+          cancelBtnText: "",
+          okBtnFunction: () => push(context, HomePage())
+          //push(context, JogadorsPage("home")) //Fazer algo
+          //Fazer algo
+          );
+    } else {
+      DialogUtils.showCustomDialog(context,
+          title: resposne.msg,
+          okBtnText: "Ok",
+          cancelBtnText: "",
+          okBtnFunction: () => Navigator.pop(context)
+          //push(context, JogadorsPage("home")) //Fazer algo
+          //Fazer algo
+          );
+    }
   }
 }
