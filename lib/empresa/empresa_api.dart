@@ -7,27 +7,6 @@ import 'package:jogaaonde/utils/prefs.dart';
 import 'package:http/http.dart' as http;
 
 class EmpresaApi{
-  static List<Empresa> getEmpresas(){
-    final quadras = List<Empresa>();
-
-    // quadras.add(Empresa(descricao:  "Empresa coberta",empresasId: 1,urlFoto: "https://media.gazetadopovo.com.br/2019/11/20062402/c73bdbf0-f67b-11e9-b226-7b752c85f238-wp-660x372.jpg"));
-    // quadras.add(Empresa(nome: "Empresa aberta",empresa: "Trieste Stadium",urlFoto: "https://media.gazetadopovo.com.br/2019/11/20062402/c73bdbf0-f67b-11e9-b226-7b752c85f238-wp-660x372.jpg"));
-    // quadras.add(Empresa(nome: "Empresa coberta",empresa: "Bola murcha",urlFoto: "https://media.gazetadopovo.com.br/2019/11/20062402/c73bdbf0-f67b-11e9-b226-7b752c85f238-wp-660x372.jpg"));
-    // quadras.add(Empresa(nome: "Empresa coberta",empresa: "Bola murcha",urlFoto: "https://media.gazetadopovo.com.br/2019/11/20062402/c73bdbf0-f67b-11e9-b226-7b752c85f238-wp-660x372.jpg"));
-    // quadras.add(Empresa(nome: "Empresa coberta",empresa: "Bola murcha",urlFoto: "https://media.gazetadopovo.com.br/2019/11/20062402/c73bdbf0-f67b-11e9-b226-7b752c85f238-wp-660x372.jpg"));
-    // quadras.add(Empresa(nome: "Empresa coberta",empresa: "Bola murcha",urlFoto: "https://media.gazetadopovo.com.br/2019/11/20062402/c73bdbf0-f67b-11e9-b226-7b752c85f238-wp-660x372.jpg"));
-    // quadras.add(Empresa(nome: "Empresa coberta",empresa: "Bola murcha",urlFoto: "https://media.gazetadopovo.com.br/2019/11/20062402/c73bdbf0-f67b-11e9-b226-7b752c85f238-wp-660x372.jpg"));
-    // quadras.add(Empresa(nome: "Empresa coberta",empresa: "Bola murcha",urlFoto: "https://media.gazetadopovo.com.br/2019/11/20062402/c73bdbf0-f67b-11e9-b226-7b752c85f238-wp-660x372.jpg"));
-    // quadras.add(Empresa(nome: "Empresa coberta",empresa: "Bola murcha",urlFoto: "https://media.gazetadopovo.com.br/2019/11/20062402/c73bdbf0-f67b-11e9-b226-7b752c85f238-wp-660x372.jpg"));
-    // quadras.add(Empresa(nome: "Empresa coberta",empresa: "Bola murcha",urlFoto: "https://media.gazetadopovo.com.br/2019/11/20062402/c73bdbf0-f67b-11e9-b226-7b752c85f238-wp-660x372.jpg"));
-    // quadras.add(Empresa(nome: "Empresa coberta",empresa: "Bola murcha",urlFoto: "https://media.gazetadopovo.com.br/2019/11/20062402/c73bdbf0-f67b-11e9-b226-7b752c85f238-wp-660x372.jpg"));
-    // quadras.add(Empresa(nome: "Empresa coberta",empresa: "Bola murcha",urlFoto: "https://media.gazetadopovo.com.br/2019/11/20062402/c73bdbf0-f67b-11e9-b226-7b752c85f238-wp-660x372.jpg"));
-    // quadras.add(Empresa(nome: "Empresa coberta",empresa: "Bola murcha",urlFoto: "https://media.gazetadopovo.com.br/2019/11/20062402/c73bdbf0-f67b-11e9-b226-7b752c85f238-wp-660x372.jpg"));
-    // quadras.add(Empresa(nome: "Empresa coberta",empresa: "Bola murcha",urlFoto: "https://media.gazetadopovo.com.br/2019/11/20062402/c73bdbf0-f67b-11e9-b226-7b752c85f238-wp-660x372.jpg"));
-    // quadras.add(Empresa(nome: "Empresa coberta",empresa: "Bola murcha",urlFoto: "https://media.gazetadopovo.com.br/2019/11/20062402/c73bdbf0-f67b-11e9-b226-7b752c85f238-wp-660x372.jpg"));
-
-    return quadras;
-  }
 
   static Future<List<Empresa>> getEmpresaByCidade(String cidade) async {
     try{

@@ -10,7 +10,7 @@ import 'package:jogaaonde/time/time_page.dart';
 import 'package:jogaaonde/utils/constants.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'package:jogaaonde/utils/prefs.dart';
-import 'package:jogaaonde/utils/text_error.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
 
 class SelecionarTimePage extends StatefulWidget {
   @override
@@ -84,7 +84,6 @@ class _SelecionarTimePageState extends State<SelecionarTimePage> {
                   ),
                 ),
                 SizedBox(height: 10),
-                //_rowBuscar(),
                 _listTimes(),
                 //GridDashboard()
               ],

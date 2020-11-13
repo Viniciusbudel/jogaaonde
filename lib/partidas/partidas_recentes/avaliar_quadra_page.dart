@@ -1,33 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jogaaonde/empresa/empresa.dart';
 import 'package:jogaaonde/home/home_page.dart';
+import 'package:jogaaonde/partidas/partidas_recentes/jogadores_partida_page.dart';
+import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes_api.dart';
 import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/partidas/marcar_partida/selecionar_data_page.dart';
 import 'package:jogaaonde/quadra/quadra.dart';
 import 'package:jogaaonde/quadra/quadra_bloc.dart';
+import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/utils/constants.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
+import 'package:jogaaonde/utils/widgets/custom_button.dart';
 
-class ListarQuadraPage extends StatefulWidget {
-  Empresa empresa;
-  String idTime;
+class AvaliarQuadraPage extends StatefulWidget {
+  Quadra quadra;
+  Time time;
+  int idPartida;
 
-  ListarQuadraPage(this.empresa, this.idTime);
+  AvaliarQuadraPage(this.quadra, this.time, this.idPartida);
 
   @override
-  _ListarQuadraPageState createState() => _ListarQuadraPageState();
+  _AvaliarQuadraPageState createState() => _AvaliarQuadraPageState();
 }
 
-class _ListarQuadraPageState extends State<ListarQuadraPage> {
+class _AvaliarQuadraPageState extends State<AvaliarQuadraPage> {
   final _bloc = QuadraBloc();
   List<Quadra> quadras;
   final _tNome = TextEditingController();
 
+  int ratingAtual = 0;
+
   @override
   void initState() {
     // TODO: implement initState
-    _bloc.getQuadraByEmpresa(widget.empresa.id.toString());
+    // _bloc.getQuadraById(widget.empresa.id.toString());
     super.initState();
   }
 
@@ -58,7 +66,6 @@ class _ListarQuadraPageState extends State<ListarQuadraPage> {
                           push(context, HomePage());
                         },
                       ),
-
                       Padding(
                         padding: const EdgeInsets.only(left: 8),
                         child: Column(
@@ -73,7 +80,7 @@ class _ListarQuadraPageState extends State<ListarQuadraPage> {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              "Listar Quadra",
+                              "Avaliar Quadra",
                               style: GoogleFonts.lato(
                                   color: Color(0xffa29aac),
                                   fontSize: 14,
@@ -82,18 +89,15 @@ class _ListarQuadraPageState extends State<ListarQuadraPage> {
                           ],
                         ),
                       ),
-                      //                    IconButton(
-                      //                      alignment: Alignment.topCenter,
-                      //                      icon: Icon(Icons.list),
-                      //                      color: Colors.white70,
-                      //                      onPressed: () {},
-                      //                    )
                     ],
                   ),
                 ),
                 SizedBox(height: 10),
-                _listQuadras(),
-
+                makeCard(),
+                SizedBox(height: 10),
+                _avaliacao(),
+                SizedBox(height: 10),
+                CustomButton("CONFIRAMR", asyncFunc)
                 //GridDashboard()
               ],
             ),
@@ -105,43 +109,31 @@ class _ListarQuadraPageState extends State<ListarQuadraPage> {
     }
   }
 
-  _listQuadras() {
-    return StreamBuilder(
-        stream: _bloc.stream,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return TextError("Não foi possivel buscar os dados!");
-          }
-          if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          quadras = snapshot.data;
-          return RefreshIndicator(
-              onRefresh: _onRefresh, child: _listViewQuadras(quadras));
-          //child: QuadraListView(quadras, widget.origem));
-        });
-  }
-
-  _listViewQuadras(List<Quadra> quadras) {
-    return ListView.builder(
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: quadras.length,
-      itemBuilder: (BuildContext context, int index) {
-        return makeCard(index, context);
+  _avaliacao() {
+    return RatingBar.builder(
+      initialRating: 3,
+      minRating: 1,
+      direction: Axis.horizontal,
+      allowHalfRating: false,
+      itemCount: 5,
+      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+      itemBuilder: (context, _) => Icon(
+        Icons.star,
+        color: Colors.amber,
+      ),
+      onRatingUpdate: (rating) {
+        ratingAtual = rating.toInt();
+        print(rating);
       },
     );
   }
 
-  makeCard(int index, context) {
-    Quadra quadra = quadras[index];
+  makeCard() {
+    Quadra quadra = widget.quadra;
     return Container(
       padding: EdgeInsets.all(8),
       child: GestureDetector(
-        onTap: () =>
-            push(context, SelecionarData(widget.idTime, quadra.id.toString())),
+        //onTap: () => push(context, SelecionarData(widget.idTime, quadra.id.toString())),
         child: Card(
           color: Color(0xFF05290C),
           shape: RoundedRectangleBorder(
@@ -205,11 +197,15 @@ class _ListarQuadraPageState extends State<ListarQuadraPage> {
     _bloc.dispose();
   }
 
-  Future<void> _onRefresh() {
-    return _bloc.getQuadraByEmpresa(widget.empresa.id.toString());
-  }
-
   Future<bool> _onBackPressed() async {
     push(context, HomePage());
+  }
+
+  Future<void> asyncFunc() async {
+    final response = await PartidasRecentesApi.insertAvaliacaoQuadra(
+        ratingAtual, widget.idPartida);
+    if (response.ok) {
+      push(context, JodadoresPartidasPage(widget.time, widget.idPartida));
+    }
   }
 }

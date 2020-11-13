@@ -10,7 +10,7 @@ import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes_bloc.dart
 import 'package:jogaaonde/social/social_page.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/utils/nav.dart';
-import 'package:jogaaonde/utils/text_error.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
 
 class ListaMinhasPartidasPage extends StatefulWidget {
   Time time;

@@ -7,9 +7,10 @@ import 'package:jogaaonde/jogador/jogador_bloc.dart';
 import 'package:jogaaonde/time/lista_times_page.dart';
 import 'package:jogaaonde/time/time_bloc.dart';
 import 'package:jogaaonde/utils/constants.dart';
-import 'package:jogaaonde/utils/custom_dialog.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_dialog.dart';
 import 'package:jogaaonde/utils/nav.dart';
-import 'package:jogaaonde/utils/text_error.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
+import 'package:jogaaonde/utils/widgets/custom_search_row.dart';
 
 class ListaJogadorPage extends StatefulWidget {
   String idTime;
@@ -55,7 +56,7 @@ class _HomePageState extends State<ListaJogadorPage> {
                       icon: Icon(Icons.arrow_back_ios),
                       color: Colors.white70,
                       onPressed: () {
-                        push(context, HomePage());
+                        push(context, ListarTimePage("home"));
                       },
                     ),
                     Padding(
@@ -85,21 +86,13 @@ class _HomePageState extends State<ListaJogadorPage> {
                 ),
               ),
               SizedBox(height: 10),
-              _rowBuscar(),
+              CustomSearchRow("Buscar por nome ou e-mail", _tNome, _onClickSearch),
               _listJogadors(),
 
               //GridDashboard()
             ],
           ),
         ),
-//        floatingActionButton: FloatingActionButton.extended(
-//          icon: Icon(Icons.add),
-//          label: Text("Cadastrar"),
-//          backgroundColor: Colors.orange[700],
-//          onPressed: () {
-//            //push(context, CadastrarJogadorPage(null));
-//          },
-//        ),
       ),
     );
   }
@@ -122,53 +115,9 @@ class _HomePageState extends State<ListaJogadorPage> {
         });
   }
 
-  Padding _rowBuscar() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 8, right: 8),
-      child: Container(
-        decoration: kBoxDecorationStyle,
-        child: Row(
-          children: [
-            Expanded(
-              flex: 7,
-              child: TextField(
-                controller: _tNome,
-                obscureText: false,
-                style: kFieldTextStyle,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.only(top: 14.0),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.orange[700],
-                  ),
-                  hintText: "Buscar por nome",
-                  hintStyle: kHintTextStyle,
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 3,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: RaisedButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      side: BorderSide(color: Colors.orange[400])),
-                  color: Colors.orange[700],
-                  onPressed: () => _bloc.getJogadoresByNomeOrEmail(_tNome.text),
-                  child: Text(
-                    "Buscar",
-                    style: GoogleFonts.lato(
-                        color: Colors.white, fontWeight: FontWeight.w300),
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
+
+  _onClickSearch(){
+    _bloc.getJogadoresByNomeOrEmail(_tNome.text);
   }
 
   @override
@@ -246,7 +195,7 @@ class _HomePageState extends State<ListaJogadorPage> {
 
     if (response.ok) {
       DialogUtils.showCustomDialog(context,
-          title: response.msg,
+          title: "Jogador adicionado com sucesso!",
           okBtnText: "Ok",
           cancelBtnText: "",
           okBtnFunction: () => push(context, ListarTimePage("home")) //Fazer algo

@@ -9,7 +9,8 @@ import 'package:jogaaonde/quadra/quadra_bloc.dart';
 import 'package:jogaaonde/quadra/quadra_page.dart';
 import 'package:jogaaonde/utils/constants.dart';
 import 'package:jogaaonde/utils/nav.dart';
-import 'package:jogaaonde/utils/text_error.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
+import 'package:jogaaonde/utils/widgets/custom_search_row.dart';
 
 class ListaEmpresaPage extends StatefulWidget {
   String idTime;
@@ -59,7 +60,6 @@ class _ListaEmpresaPageState extends State<ListaEmpresaPage> {
                           push(context, HomePage());
                         },
                       ),
-
                       Padding(
                         padding: const EdgeInsets.only(left: 8),
                         child: Column(
@@ -87,7 +87,7 @@ class _ListaEmpresaPageState extends State<ListaEmpresaPage> {
                   ),
                 ),
                 SizedBox(height: 20),
-                _rowBuscar(),
+                CustomSearchRow("Buscar por Cidade", _tNome, _onClickSearch),
                 _listEmpresas(),
 
                 //GridDashboard()
@@ -151,77 +151,18 @@ class _ListaEmpresaPageState extends State<ListaEmpresaPage> {
             style: GoogleFonts.lato(
                 color: Colors.white, fontWeight: FontWeight.bold),
           ),
-          subtitle: Text(e.cidade,
-              style: GoogleFonts.lato(color: Colors.white)),
-
+          subtitle:
+              Text(e.cidade, style: GoogleFonts.lato(color: Colors.white)),
           trailing: Icon(Icons.keyboard_arrow_right,
               color: Colors.white, size: 30.0)),
     );
   }
 
-  Padding _rowBuscar() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, right: 16),
-      child: Container(
-        decoration: kBoxDecorationStyle,
-        child: Row(
-          children: [
-            Expanded(
-              flex: 7,
-              child: TextField(
-                controller: _tNome,
-                obscureText: false,
-                style: GoogleFonts.lato(
-                  letterSpacing: 1.0,
-                  fontSize: 14.0,
-                  //fontWeight: FontWeight.w300,
-                  //color: Color(0xFF123c62),
-                  color: Colors.red[700],
-                ),
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.only(top: 14.0),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.red[700],
-                  ),
-                  hintText: "Buscar por cidade",
-                  hintStyle: GoogleFonts.lato(
-                    letterSpacing: 1.0,
-                    fontSize: 14.0,
-                    //fontWeight: FontWeight.w300,
-                    //color: Color(0xFF123c62),
-                    color: Colors.red[700],
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 3,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: RaisedButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      side: BorderSide(color: Colors.red[400])),
-                  color: Colors.red[700],
-                  onPressed: () => _bloc.getEmpresaByCidade(_tNome.text),
-                  child: Text(
-                    "Buscar",
-                    style: GoogleFonts.lato(
-                        color: Colors.white, fontWeight: FontWeight.w300),
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
+  _onClickSearch() {
+    _bloc.getEmpresaByCidade(_tNome.text);
   }
 
   Card makeCard(int index, context) {
-
     return Card(
       elevation: 8.0,
       margin: new EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),

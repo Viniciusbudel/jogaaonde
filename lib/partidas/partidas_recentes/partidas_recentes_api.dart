@@ -130,4 +130,39 @@ class PartidasRecentesApi {
           "Não foi possivel realizar o login erro inesperado");
     }
   }
+  static Future<ApiResponse<AvaliacaoJogador>> insertAvaliacaoQuadra(
+      int avaliacaoJogador, int idPartida) async {
+    try {
+      String token = await Prefs.getString("token");
+
+      var url = 'https://jogaaonde.com.br/jogador/partida/avaliar/quadra';
+
+      final params = {"partida_id": idPartida, "nota_quadra": avaliacaoJogador};
+      String body = json.encode(params);
+
+      Map<String, String> headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${token}"
+      };
+
+      final response =
+          await http.post(url, body: body, headers: headers);
+
+      Map mapResponse = json.decode(response.body);
+
+      if (response.statusCode == 200) {
+        final user = AvaliacaoJogador.fromJson(mapResponse);
+
+        return ApiResponse.ok(user);
+      }
+
+      //amoobudel
+      return ApiResponse.error(mapResponse["message"]);
+    } catch (error, exception) {
+      print("erro no login $error > $exception");
+
+      return ApiResponse.error(
+          "Não foi possivel realizar o login erro inesperado");
+    }
+  }
 }

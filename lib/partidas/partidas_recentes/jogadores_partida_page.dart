@@ -8,7 +8,7 @@ import 'package:jogaaonde/partidas/partidas_recentes/avaliacao_jogador.dart';
 import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes_api.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/utils/nav.dart';
-import 'package:jogaaonde/utils/text_error.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
 import 'package:jogaaonde/utils/widgets/custom_button.dart';
 
 class JodadoresPartidasPage extends StatefulWidget {
@@ -230,7 +230,7 @@ class _HomePageState extends State<JodadoresPartidasPage> {
           builder: (context) {
             return new AlertDialog(
               title: Text('Avalie Jogador'),
-              content: RatingBar(
+              content: RatingBar.builder(
                   initialRating: 3,
                   itemCount: 5,
                   itemBuilder: (context, index) {

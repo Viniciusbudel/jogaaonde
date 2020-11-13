@@ -5,10 +5,11 @@ import 'package:jogaaonde/time/lista_times_page.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/time/time_bloc.dart';
 import 'package:jogaaonde/utils/constants.dart';
-import 'package:jogaaonde/utils/custom_dialog.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_dialog.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'package:jogaaonde/utils/prefs.dart';
-import 'package:jogaaonde/utils/text_error.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
+import 'package:jogaaonde/utils/widgets/custom_search_row.dart';
 
 class ListarTimesProximosPage extends StatefulWidget {
   @override
@@ -82,20 +83,12 @@ class _ListarTimesProximosPageState extends State<ListarTimesProximosPage> {
                           ],
                         ),
                       ),
-                      //                    IconButton(
-                      //                      alignment: Alignment.topCenter,
-                      //                      icon: Icon(Icons.list),
-                      //                      color: Colors.white70,
-                      //                      onPressed: () {},
-                      //                    )
                     ],
                   ),
                 ),
                 SizedBox(height: 10),
-                _rowBuscar(),
+                CustomSearchRow("Buscar por Cidade", _tNome, _onClickSearch),
                 _listTimes(),
-
-                //GridDashboard()
               ],
             ),
           ),
@@ -187,65 +180,8 @@ class _ListarTimesProximosPageState extends State<ListarTimesProximosPage> {
     );
   }
 
-  Padding _rowBuscar() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, right: 16),
-      child: Container(
-        decoration: kBoxDecorationStyle,
-        child: Row(
-          children: [
-            Expanded(
-              flex: 7,
-              child: TextField(
-                controller: _tNome,
-                obscureText: false,
-                style: GoogleFonts.lato(
-                  letterSpacing: 1.0,
-                  fontSize: 14.0,
-                  //fontWeight: FontWeight.w300,
-                  //color: Color(0xFF123c62),
-                  color: Colors.red[700],
-                ),
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.only(top: 14.0),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.red[700],
-                  ),
-                  hintText: "Buscar por cidade",
-                  hintStyle: GoogleFonts.lato(
-                    letterSpacing: 1.0,
-                    fontSize: 14.0,
-                    //fontWeight: FontWeight.w300,
-                    //color: Color(0xFF123c62),
-                    color: Colors.red[700],
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 3,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: RaisedButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      side: BorderSide(color: Colors.red[400])),
-                  color: Colors.red[700],
-                  onPressed: () => _bloc.listarTimesByCidade(_tNome.text),
-                  child: Text(
-                    "Buscar",
-                    style: GoogleFonts.lato(
-                        color: Colors.white, fontWeight: FontWeight.w300),
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
+  _onClickSearch(){
+    _bloc.listarTimesByCidade(_tNome.text);
   }
 
   @override

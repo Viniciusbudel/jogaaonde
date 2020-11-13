@@ -8,7 +8,7 @@ import 'package:jogaaonde/login/login_page.dart';
 import 'package:jogaaonde/social/social_page.dart';
 import 'package:jogaaonde/utils/api_response.dart';
 import 'package:jogaaonde/utils/constants.dart';
-import 'package:jogaaonde/utils/custom_dialog.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_dialog.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'package:via_cep/via_cep.dart';
 

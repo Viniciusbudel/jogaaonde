@@ -24,7 +24,7 @@ class TimeApi {
 
       Map mapResponse = json.decode(response.body);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final user = Time.fromJson(mapResponse);
 
         return ApiResponse.ok(user);
@@ -137,8 +137,8 @@ class TimeApi {
 
       Map mapResponse = json.decode(response.body);
 
-      if (response.statusCode == 200) {
-        return ApiResponse.ok(mapResponse["message"]);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return ApiResponse.ok(null);
 
       }else{
         return ApiResponse.error(mapResponse["message"]);
@@ -150,70 +150,4 @@ class TimeApi {
       return null;
     }
   }
-
-//   static Future<List<Time>> getTimesPorNome(String nome) async {
-//     try {
-//       String token = await Prefs.getString("token");
-//
-//       final _configDAO = ConfiguracaoDAO();
-//       Configuracao configuracao = await _configDAO.findById(1);
-//       String url1 = "";
-//       if (configuracao != null) {
-//         url1 = configuracao.url;
-//       }
-//
-//       var url = 'http://' +
-//           url1 +
-//           '/scps-mobile/sincronizacao/send-data?XDEBUG_SESSION_START=11447';
-//
-//       final params = {"Action": "TimePorNome", "Nome": "$nome"};
-//
-//       print("> Pedido Post POST: $url");
-//       print("> Params: $params");
-//
-//       Map<String, String> headers = {"Authorization": "Bearer ${token}"};
-//
-//       final response = await http.post(url, body: params, headers: headers);
-//
-//       print('Response status: ${response.statusCode}');
-//       print('Response body: ${response.body}');
-//
-//       //Map mapResponse = json.decode(response.body);
-//       final map = convert.json.decode(response.body);
-//
-//       //List list = convert.json.decode(response.body);
-//
-//       List list = map["Retorno"];
-//
-// //      final user = Time.fromJson(retorno);
-//       final times =
-//           list.map<Time>((map) => Time.fromJson(map)).toList();
-//
-//       var retornoResponse = false;
-//
-// //      Time tamanhos;
-// //      list.forEach((element) {
-// //        element = element;
-// //        //json = element.map<Time>();
-// //
-// //        tamanhos = element.map<Time>((json) => Time.fromJson(json))
-// //            .toList();
-// //        retornoResponse = true;
-// //      });
-//       //if (response.statusCode == 200) {
-// //        user.save();
-//
-// //        Usuario  user2 = await Usuario.get();
-//
-//       //print("usuario2 $user2");
-//
-//       return times;
-//       //}
-//
-//     } catch (error, exception) {
-//       print("erro no login $error > $exception");
-//
-//       //return error("Não foi possivel realizar o login erro inesperado");
-//     }
-//   }
 }

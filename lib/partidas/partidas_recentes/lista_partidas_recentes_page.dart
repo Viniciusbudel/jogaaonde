@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:jogaaonde/home/home_page.dart';
+import 'package:jogaaonde/partidas/partidas_recentes/avaliar_quadra_page.dart';
 import 'package:jogaaonde/partidas/partidas_recentes/jogadores_partida_page.dart';
 import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes.dart';
 import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes_bloc.dart';
+import 'package:jogaaonde/quadra/quadra_api.dart';
 import 'package:jogaaonde/social/social_page.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/utils/nav.dart';
-import 'package:jogaaonde/utils/text_error.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
 
 class ListaPartidasRecentesPage extends StatefulWidget {
   Time time;
@@ -135,7 +137,7 @@ class _ListaPartidasRecentesPageState extends State<ListaPartidasRecentesPage> {
   makeListTile(index, context) {
     PartidasRecentes partRecentes = quadras[index];
     return GestureDetector(
-      onTap: () => _onClickPartRecente(partRecentes.id),
+      onTap: () => _onClickPartRecente(partRecentes),
       child: ListTile(
           contentPadding:
               EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
@@ -213,9 +215,11 @@ class _ListaPartidasRecentesPageState extends State<ListaPartidasRecentesPage> {
     push(context, SocialPage());
   }
 
-  _onClickPartRecente(int id) {
+  _onClickPartRecente(PartidasRecentes partidasRecentes) async {
 
-    push(context, JodadoresPartidasPage(widget.time,id));
+    final quadra = await QuadraApi.getQuadraById(partidasRecentes.quadra_id);
+    push(context, AvaliarQuadraPage(quadra,widget.time,partidasRecentes.id));
+
 
   }
 }

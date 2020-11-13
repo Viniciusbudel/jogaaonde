@@ -10,7 +10,7 @@ import 'package:jogaaonde/quadra/quadra_bloc.dart';
 import 'package:jogaaonde/quadra/quadra_page.dart';
 import 'package:jogaaonde/utils/constants.dart';
 import 'package:jogaaonde/utils/nav.dart';
-import 'package:jogaaonde/utils/text_error.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
 
 class CampeonatoPage extends StatefulWidget {
   CampeonatoPage();

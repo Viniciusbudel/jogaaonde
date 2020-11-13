@@ -5,7 +5,7 @@ import 'package:jogaaonde/home/home_page.dart';
 import 'package:jogaaonde/login/login.dart';
 import 'package:jogaaonde/login/login_bloc.dart';
 import 'package:jogaaonde/utils/api_response.dart';
-import 'package:jogaaonde/utils/custom_dialog.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_dialog.dart';
 import 'package:jogaaonde/utils/prefs.dart';
 import 'package:jogaaonde/utils/widgets/custom_button.dart';
 import 'package:jogaaonde/utils/widgets/custom_text_field.dart';

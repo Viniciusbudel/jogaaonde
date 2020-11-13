@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jogaaonde/home/home_page.dart';
+import 'package:jogaaonde/social/social_page.dart';
+import 'package:jogaaonde/time/lista_times_page.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/time/time_bloc.dart';
+import 'package:jogaaonde/time/time_page.dart';
 import 'package:jogaaonde/utils/checkbox_model.dart';
 import 'package:jogaaonde/utils/constants.dart';
-import 'package:jogaaonde/utils/custom_dialog.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_dialog.dart';
 import 'package:jogaaonde/utils/nav.dart';
-import 'package:jogaaonde/utils/widgets/checkbox_field.dart';
+import 'package:jogaaonde/utils/widgets/custom_checkbox_field.dart';
 import 'package:jogaaonde/utils/widgets/custom_checkbox.dart';
 import 'package:jogaaonde/utils/widgets/custom_text_field.dart';
 
@@ -88,7 +91,7 @@ class _HomePageState extends State<NovoTime> {
                     icon: Icon(Icons.arrow_back_ios),
                     color: Colors.white70,
                     onPressed: () {
-                      push(context, HomePage());
+                      push(context, SocialPage());
                     },
                   ),
                   Padding(
@@ -210,8 +213,7 @@ class _HomePageState extends State<NovoTime> {
           title: "Time Cadastrado com Sucesso",
           okBtnText: "Ok",
           cancelBtnText: "",
-          okBtnFunction: () => Navigator.pop(context)
-          //push(context, TimesPage("home")) //Fazer algo
+          okBtnFunction: () => push(context, ListarTimePage("home")) //Fazer algo
           //Fazer algo
           );
     } else {

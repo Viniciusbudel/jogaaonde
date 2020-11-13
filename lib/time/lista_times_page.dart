@@ -7,10 +7,10 @@ import 'package:jogaaonde/partidas/partidas_recentes/lista_partidas_recentes_pag
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/time/time_bloc.dart';
 import 'package:jogaaonde/time/time_page.dart';
-import 'package:jogaaonde/utils/custom_dialog.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_dialog.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'package:jogaaonde/utils/prefs.dart';
-import 'package:jogaaonde/utils/text_error.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
 
 class ListarTimePage extends StatefulWidget {
   String origem;

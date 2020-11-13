@@ -11,7 +11,7 @@ import 'package:jogaaonde/time/time_page.dart';
 import 'package:jogaaonde/utils/constants.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'package:jogaaonde/utils/prefs.dart';
-import 'package:jogaaonde/utils/text_error.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
 
 class ListarCampeonatoPage extends StatefulWidget {
 
@@ -96,7 +96,6 @@ class _ListarCampeonatoPageState extends State<ListarCampeonatoPage> {
                   ),
                 ),
                 SizedBox(height: 10),
-                //_rowBuscar(),
                 _listCampeonatos(),
 
                 //GridDashboard()

@@ -5,16 +5,21 @@ import 'package:jogaaonde/home/home_page.dart';
 import 'package:jogaaonde/jogador/adicionar_jogador/lista_jogador_page.dart';
 import 'package:jogaaonde/jogador/jogador.dart';
 import 'package:jogaaonde/jogador/jogador_bloc.dart';
+import 'package:jogaaonde/social/social_page.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/time/time_bloc.dart';
+import 'package:jogaaonde/utils/checkbox_model.dart';
 import 'package:jogaaonde/utils/constants.dart';
-import 'package:jogaaonde/utils/custom_dialog.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_dialog.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'package:jogaaonde/utils/prefs.dart';
-import 'package:jogaaonde/utils/text_error.dart';
+import 'package:jogaaonde/utils/widgets/custom_button.dart';
+import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
+import 'package:jogaaonde/utils/widgets/custom_checkbox_field.dart';
 
 class TimePage extends StatefulWidget {
   Time time;
+
   TimePage(this.time);
 
   @override
@@ -26,6 +31,10 @@ class _HomePageState extends State<TimePage> {
   IconData _icon = Icons.sentiment_neutral;
   final _formKey = GlobalKey<FormState>();
   bool showProgress = false;
+  CheckBoxModel dispoParaJogosCheck =
+      CheckBoxModel(texto: "Disponível para Jogos");
+  CheckBoxModel aceitaIntegrantesCheck =
+      CheckBoxModel(texto: "Aceita Integrantes");
 
   final _timeBloc = TimeBloc();
 
@@ -64,61 +73,50 @@ class _HomePageState extends State<TimePage> {
                 height: 60,
               ),
               Padding(
-                padding: EdgeInsets.only(left: 16, right: 16),
+                padding: EdgeInsets.only(left: 8, right: 8),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "Joga Aonde",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'OpenSans',
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),
-                        Text(
-                          "Pelada FC",
-                          style: TextStyle(
-                              color: Color(0xffa29aac),
-                              fontSize: 14,
-                              fontFamily: 'OpenSans',
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
                     IconButton(
                       alignment: Alignment.topCenter,
-                      icon: Icon(Icons.list),
+                      icon: Icon(Icons.arrow_back_ios),
                       color: Colors.white70,
-                      onPressed: () {},
-                    )
+                      onPressed: () {
+                        push(context, SocialPage());
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "Joga Aonde",
+                            style: GoogleFonts.lato(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            "Listar Jogadors",
+                            style: GoogleFonts.lato(
+                                color: Color(0xffa29aac),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
-//            Container(
-//              padding: EdgeInsets.only(left: 16),
-//              child: Row(children: <Widget>[
-//                Image.asset("assets/images/novo_time_128.png"),
-//                Text("",
-//                    style: TextStyle(
-//                        color: Color(0xffa29aac),
-//                        fontSize: 14,
-//                        fontFamily: 'OpenSans',
-//                        fontWeight: FontWeight.w600))
-//
-//              ],),
-//            ),
               SizedBox(
                 height: 20,
               ),
-              widget.time.jogador_adm.toString() == id ?
-              _camposEditarTime() : Container(),
+              widget.time.jogador_adm.toString() == id
+                  ? _camposEditarTime()
+                  : Container(),
               _listTimes(),
               SizedBox(height: 40),
 
@@ -138,22 +136,25 @@ class _HomePageState extends State<TimePage> {
 
   Container _camposEditarTime() {
     return Container(
-              //height: double.infinity,
-              padding: EdgeInsets.all(16),
-              child: Column(
-                children: <Widget>[
-                  _buildNomeTF(),
-                  SizedBox(height: 20),
-                  _buildDescricao(),
-                  SizedBox(height: 20),
-                  _buildCidadeTF(),
-                  SizedBox(height: 20),
-                  _buildEstadoTF(),
-                  SizedBox(height: 20),
-                  _buildCadastroBtn(),
-                ],
-              ),
-            );
+      //height: double.infinity,
+      padding: EdgeInsets.all(16),
+      child: Column(
+        children: <Widget>[
+          _buildNomeTF(),
+          SizedBox(height: 20),
+          _buildDescricao(),
+          SizedBox(height: 20),
+          _buildCidadeTF(),
+          SizedBox(height: 20),
+          _buildEstadoTF(),
+          SizedBox(height: 30),
+          CheckBoxField(dispoParaJogosCheck),
+          CheckBoxField(aceitaIntegrantesCheck),
+          SizedBox(height: 20),
+          CustomButton("ALTERAR", onClickCadastrarTime),
+        ],
+      ),
+    );
   }
 
   _listTimes() {
@@ -262,53 +263,9 @@ class _HomePageState extends State<TimePage> {
             ],
           ),
           trailing: GestureDetector(
-              onTap: () => _rateDialog(context), //PartidasRecentesPage
+              onTap: () => null, //PartidasRecentesPage
               child: Icon(Icons.cancel, color: Colors.white, size: 30.0))),
     );
-  }
-
-  _rateDialog(BuildContext context) async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return new AlertDialog(
-              title: Text('Avalie Jogador'),
-              content: RatingBar(
-                  initialRating: 3,
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    switch (index) {
-                      case 0:
-                        return Icon(
-                          Icons.sentiment_very_dissatisfied,
-                          color: Colors.red,
-                        );
-                      case 1:
-                        return Icon(
-                          Icons.sentiment_dissatisfied,
-                          color: Colors.redAccent,
-                        );
-                      case 2:
-                        return Icon(
-                          Icons.sentiment_neutral,
-                          color: Colors.amber,
-                        );
-                      case 3:
-                        return Icon(
-                          Icons.sentiment_satisfied,
-                          color: Colors.lightGreen,
-                        );
-                      case 4:
-                        return Icon(
-                          Icons.sentiment_very_satisfied,
-                          color: Colors.green,
-                        );
-                    }
-                  },
-                  onRatingUpdate: (rating) {
-                    setState() => _icon = Icons.sentiment_very_satisfied;
-                  }));
-        });
   }
 
   Widget _buildNomeTF() {
@@ -453,32 +410,6 @@ class _HomePageState extends State<TimePage> {
     );
   }
 
-  Widget _buildCadastroBtn() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 25.0),
-      width: double.infinity,
-      child: RaisedButton(
-        elevation: 5.0,
-        onPressed: () => onClickCadastrarTime(),
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        color: Colors.white,
-        child: Text(
-          'CADASTRAR',
-          style: TextStyle(
-            color: Colors.greenAccent[400],
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'OpenSans',
-          ),
-        ),
-      ),
-    );
-  }
-
   onClickCadastrarTime() async {
     //if (_formKey.currentState.validate()) {
     setState(() {
@@ -499,7 +430,7 @@ class _HomePageState extends State<TimePage> {
 
     if (response.ok) {
       DialogUtils.showCustomDialog(context,
-          title: "Time Cadastrado com Sucesso!",
+          title: "Time Alterado com Sucesso!",
           okBtnText: "Ok",
           cancelBtnText: "",
           okBtnFunction: () => Navigator.pop(context)

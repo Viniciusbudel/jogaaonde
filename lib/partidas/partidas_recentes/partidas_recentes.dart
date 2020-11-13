@@ -10,7 +10,7 @@ class PartidasRecentes {
   String atualizadoEm;
   String data_abertura;
   String data_fechamento;
-  String quadra_id;
+  int quadra_id;
   String quadra_descricao;
 
   PartidasRecentes(
@@ -39,7 +39,7 @@ class PartidasRecentes {
     criadoEm = json['criado_em'];
     data_abertura = json['horario']["data_abertura"];
     data_fechamento = json['horario']["data_fechamento"];
-    quadra_id = json['quadra']["quadra_id"];
+    quadra_id = json['quadra']["id"];
     quadra_descricao = json['quadra']["descricao"];
     atualizadoEm = json['atualizado_em'];
   }
