@@ -8,6 +8,7 @@ import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/partidas/
 import 'package:jogaaonde/pagamento/pagamento_teste.dart';
 import 'package:jogaaonde/quadra/quadra_page.dart';
 import 'package:jogaaonde/social/social_page.dart';
+import 'package:jogaaonde/time/lista_times_page.dart';
 
 class GridDashboard extends StatelessWidget {
   Items item1 = new Items(
@@ -68,7 +69,7 @@ class GridDashboard extends StatelessWidget {
                   onTap: () {
                     switch (index) {
                       case 0:
-                        (push(context, PagamentoTeste()));
+                        (push(context, ListarTimePage("minhasReservas")));
                         break;
                       case 1:
                         (push(context, SelecionarTimePage()));

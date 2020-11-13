@@ -204,9 +204,8 @@ class _ListaPartidasProximasPageState extends State<ListaPartidasProximasPage> {
     );
   }
 
-
-
-  Future<List<PartidasRecentes>> _onClickSearch() =>  _bloc.getPartidasAtivasByCidade(_tNome.text);
+  Future<List<PartidasRecentes>> _onClickSearch() =>
+      _bloc.getPartidasAtivasByCidade(_tNome.text);
 
   @override
   void dispose() {

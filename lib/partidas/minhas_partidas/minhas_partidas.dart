@@ -139,7 +139,7 @@ class _ListaMinhasPartidasPageState extends State<ListaMinhasPartidasPage> {
       onTap: () => _onClickPartRecente(partRecentes.id),
       child: ListTile(
           contentPadding:
-          EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           isThreeLine: true,
           leading: Container(
             padding: EdgeInsets.only(right: 12.0),
@@ -157,7 +157,6 @@ class _ListaMinhasPartidasPageState extends State<ListaMinhasPartidasPage> {
           subtitle: Container(
               padding: EdgeInsets.only(top: 2),
               child: Column(
-
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -189,7 +188,6 @@ class _ListaMinhasPartidasPageState extends State<ListaMinhasPartidasPage> {
   }
 
   Card makeCard(int index, context) {
-
     return Card(
       elevation: 8.0,
       margin: new EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
@@ -215,8 +213,6 @@ class _ListaMinhasPartidasPageState extends State<ListaMinhasPartidasPage> {
   }
 
   _onClickPartRecente(int id) {
-
-    push(context, JodadoresPartidasPage(widget.time,id));
-
+    push(context, JodadoresPartidasPage(widget.time, id));
   }
 }

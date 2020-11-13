@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:jogaaonde/campeonato/campeonato_bloc.dart';
 import 'package:jogaaonde/home/home_page.dart';
 import 'package:jogaaonde/partidas/buscar_partida/lista_partidas_proximas.dart';
+import 'package:jogaaonde/partidas/minhas_partidas/minhas_partidas.dart';
 import 'package:jogaaonde/partidas/partidas_recentes/lista_partidas_recentes_page.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/time/time_bloc.dart';
@@ -226,6 +227,9 @@ class _ListarTimePageState extends State<ListarTimePage> {
         break;
       case "procurarPartida":
         push(context, ListaPartidasProximasPage(time));
+        break;
+      case "minhasReservas":
+        push(context, ListaMinhasPartidasPage(time));
         break;
     }
   }
