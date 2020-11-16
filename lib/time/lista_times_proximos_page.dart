@@ -59,7 +59,6 @@ class _ListarTimesProximosPageState extends State<ListarTimesProximosPage> {
                           push(context, HomePage());
                         },
                       ),
-
                       Padding(
                         padding: const EdgeInsets.only(left: 8),
                         child: Column(
@@ -180,7 +179,7 @@ class _ListarTimesProximosPageState extends State<ListarTimesProximosPage> {
     );
   }
 
-  _onClickSearch(){
+  _onClickSearch() {
     _bloc.listarTimesByCidade(_tNome.text);
   }
 
@@ -244,7 +243,7 @@ class _ListarTimesProximosPageState extends State<ListarTimesProximosPage> {
     }
   }
 
-  void _showDialogEntrarTime( Time c) {
+  void _showDialogEntrarTime(Time c) {
     DialogUtils.showCustomDialog(
       context,
       title: "Deseja juntar-se ao time?",

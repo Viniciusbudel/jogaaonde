@@ -205,10 +205,9 @@ class _AvaliarQuadraPageState extends State<AvaliarQuadraPage> {
     final response = await PartidasRecentesApi.insertAvaliacaoQuadra(
         ratingAtual, widget.idPartida);
 
-
     if (response.ok) {
       push(context, JodadoresPartidasPage(widget.time, widget.idPartida));
-    }else{
+    } else {
 
     }
   }
