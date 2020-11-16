@@ -187,7 +187,7 @@ class PartidasRecentesApi {
       }
 
       //amoobudel
-      return ApiResponse.error("Erro ao avaliar tente novamente");
+      return ApiResponse.error(mapResponse["message"]);
     } catch (error, exception) {
       print("erro no login $error > $exception");
 
