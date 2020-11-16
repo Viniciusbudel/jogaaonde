@@ -8,10 +8,10 @@ import 'package:jogaaonde/partidas/partidas_recentes/lista_partidas_recentes_pag
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/time/time_bloc.dart';
 import 'package:jogaaonde/time/time_page.dart';
-import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_dialog.dart';
+import 'package:jogaaonde/utils/widgets/custom_dialog.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'package:jogaaonde/utils/prefs.dart';
-import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
+import 'package:jogaaonde/utils/widgets/custom_text_error.dart';
 
 class ListarTimePage extends StatefulWidget {
   String origem;
@@ -217,7 +217,7 @@ class _ListarTimePageState extends State<ListarTimePage> {
   _onClickTime(Time time) async {
     switch (widget.origem) {
       case "campeonato":
-        _showDialogCampeonato(_insertTimeCampeonato, time);
+        _showDialogCampeonato(time);
         break;
       case "home":
         push(context, TimePage(time));
@@ -235,37 +235,42 @@ class _ListarTimePageState extends State<ListarTimePage> {
   }
 
   Future _insertTimeCampeonato(Time c) async {
-    final _bloc = CampeonatoBloc();
-    final response =
-        await _bloc.insertTimeCampeonato(c.id.toString(), widget.idCampeonato);
+    try {
 
-    if (response.ok) {
-      DialogUtils.showCustomDialog(context,
-          title: response.msg,
-          okBtnText: "Ok",
-          cancelBtnText: "",
-          okBtnFunction: () =>
-              push(context, ListarTimePage("home")) //Fazer algo
-          //Fazer algo
-          );
-    } else {
-      DialogUtils.showCustomDialog(context,
-          title: response.msg,
-          okBtnText: "Ok",
-          cancelBtnText: "",
-          okBtnFunction: () => Navigator.pop(context)
-          //push(context, JogadorsPage("home")) //Fazer algo
-          //Fazer algo
-          );
+      Navigator.of(this.context).pop();
+      final _bloc = CampeonatoBloc();
+      final response = await _bloc.insertTimeCampeonato(c.id.toString(), widget.idCampeonato);
+
+      if (response.ok) {
+            DialogUtils.showCustomDialog(context,
+                title: response.msg,
+                okBtnText: "Ok",
+                cancelBtnText: "",
+                okBtnFunction: () =>
+                    push(context, ListarTimePage("home")) //Fazer algo
+                //Fazer algo
+                );
+          } else {
+            DialogUtils.showCustomDialog(context,
+                title: response.msg,
+                okBtnText: "Ok",
+                cancelBtnText: "",
+                okBtnFunction: () => Navigator.pop(context)
+                //push(context, JogadorsPage("home")) //Fazer algo
+                //Fazer algo
+                );
+          }
+    } catch (e) {
+      print(e);
     }
   }
 
-  void _showDialogCampeonato(Future _insertTimeCampeonato(Time c), Time c) {
+  void _showDialogCampeonato(Time c) {
     DialogUtils.showCustomDialog(
       context,
       title: "Deseja cadastrar time ao campeonato?",
       okBtnText: "Ok",
-      cancelBtnText: "",
+      cancelBtnText: "Cancelar",
       okBtnFunction: () => _insertTimeCampeonato(c),
     );
   }

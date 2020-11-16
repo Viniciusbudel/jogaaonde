@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:jogaaonde/campeonato/campeonato.dart';
 import 'package:jogaaonde/campeonato/campeonato_bloc.dart';
 import 'package:jogaaonde/home/home_page.dart';
-import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/partidas/marcar_partida/selecionar_data_page.dart';
 import 'package:jogaaonde/time/lista_times_page.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/time/time_bloc.dart';
@@ -11,7 +10,7 @@ import 'package:jogaaonde/time/time_page.dart';
 import 'package:jogaaonde/utils/constants.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'package:jogaaonde/utils/prefs.dart';
-import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
+import 'package:jogaaonde/utils/widgets/custom_text_error.dart';
 
 class ListarCampeonatoPage extends StatefulWidget {
 
@@ -142,7 +141,7 @@ class _ListarCampeonatoPageState extends State<ListarCampeonatoPage> {
   makeListTile(index, context) {
     Campeonato c = times[index];
     return GestureDetector(
-      onTap: () => push(context, ListarTimePage("campeonato")),
+      onTap: () => push(context, ListarTimePage("campeonato",idCampeonato: c.id.toString(),)),
       child: ListTile(
           contentPadding:
               EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),

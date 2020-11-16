@@ -10,11 +10,11 @@ import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/time/time_bloc.dart';
 import 'package:jogaaonde/utils/checkbox_model.dart';
 import 'package:jogaaonde/utils/constants.dart';
-import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_dialog.dart';
+import 'package:jogaaonde/utils/widgets/custom_dialog.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'package:jogaaonde/utils/prefs.dart';
 import 'package:jogaaonde/utils/widgets/custom_button.dart';
-import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
+import 'package:jogaaonde/utils/widgets/custom_text_error.dart';
 import 'package:jogaaonde/utils/widgets/custom_checkbox_field.dart';
 
 class TimePage extends StatefulWidget {
@@ -32,7 +32,7 @@ class _HomePageState extends State<TimePage> {
   final _formKey = GlobalKey<FormState>();
   bool showProgress = false;
   CheckBoxModel dispoParaJogosCheck =
-      CheckBoxModel(texto: "Disponível para Jogos");
+      CheckBoxModel(texto: "Disponível para Jogos",checked: true);
   CheckBoxModel aceitaIntegrantesCheck =
       CheckBoxModel(texto: "Aceita Integrantes");
 
@@ -51,6 +51,7 @@ class _HomePageState extends State<TimePage> {
   @override
   void initState() {
     _bloc.getJogadoresByTimeId(widget.time.id.toString());
+
 
     _tNome.text = widget.time.nome;
     _tDescricao.text = widget.time.descricao;
@@ -149,6 +150,7 @@ class _HomePageState extends State<TimePage> {
           _buildEstadoTF(),
           SizedBox(height: 30),
           CheckBoxField(dispoParaJogosCheck),
+          SizedBox(height: 30),
           CheckBoxField(aceitaIntegrantesCheck),
           SizedBox(height: 20),
           CustomButton("ALTERAR", onClickCadastrarTime),
@@ -473,6 +475,8 @@ class _HomePageState extends State<TimePage> {
     id = await Prefs.getString("id");
 
     setState(() {
+      widget.time.aceitaIntegrantes ? aceitaIntegrantesCheck.checked = true : aceitaIntegrantesCheck.checked = false;
+
       id;
     });
   }

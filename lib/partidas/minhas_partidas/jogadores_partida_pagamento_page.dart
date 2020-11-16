@@ -1,35 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:jogaaonde/home/home_page.dart';
 import 'package:jogaaonde/jogador/jogador.dart';
 import 'package:jogaaonde/jogador/jogador_bloc.dart';
 import 'package:jogaaonde/partidas/partidas_recentes/avaliacao_jogador.dart';
+import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes.dart';
 import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes_api.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'package:jogaaonde/utils/widgets/custom_text_error.dart';
 import 'package:jogaaonde/utils/widgets/custom_button.dart';
+import 'package:mercado_pago_integration/core/failures.dart';
+import 'package:mercado_pago_integration/mercado_pago_integration.dart';
+import 'package:mercado_pago_integration/models/payment.dart';
 
-class JodadoresPartidasPage extends StatefulWidget {
-  Time time;
-  int idPartida;
+class JodadoresPartidasPagamentoPage extends StatefulWidget {
+  PartidasRecentes partidasRecentes;
 
-  JodadoresPartidasPage(this.time, this.idPartida);
+  JodadoresPartidasPagamentoPage(this.partidasRecentes);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<JodadoresPartidasPage> {
+class _HomePageState extends State<JodadoresPartidasPagamentoPage> {
   String dropdownValue = "";
-  IconData _icon = Icons.sentiment_neutral;
   List<Jogador> jogadores;
   final _bloc = JogadorBloc();
+  DateFormat dateFormat = DateFormat("dd/MM/yyyy HH:mm:ss");
+  DateFormat hourFormat = DateFormat("HH:mm:ss");
 
   @override
   void initState() {
-    _bloc.getJogadoresByTimeId(widget.time.id.toString());
+    _bloc.getJogadoresByPartida(widget.partidasRecentes);
 
     super.initState();
   }
@@ -45,7 +50,6 @@ class _HomePageState extends State<JodadoresPartidasPage> {
             SizedBox(
               height: 60,
             ),
-
             Padding(
               padding: EdgeInsets.only(left: 8, right: 8),
               child: Row(
@@ -73,7 +77,7 @@ class _HomePageState extends State<JodadoresPartidasPage> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          "Listar Partidas Recentes",
+                          "Listar Jogadores Partida",
                           style: GoogleFonts.lato(
                               color: Color(0xffa29aac),
                               fontSize: 14,
@@ -85,16 +89,57 @@ class _HomePageState extends State<JodadoresPartidasPage> {
                 ],
               ),
             ),
+            SizedBox(
+              height: 20,
+            ),
+
+            Text(
+              'Quadra: ' + widget.partidasRecentes.descricao,
+              style: GoogleFonts.lato(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              _txtData(widget.partidasRecentes),
+              style: GoogleFonts.lato(
+                  color: Colors.white70,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              "Total: R\$" + widget.partidasRecentes.preco.toString(),
+              style: GoogleFonts.lato(
+                  color: Colors.white70,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600),
+            ),
             _listPartidasRecentess(),
-            Container(
-              padding: EdgeInsets.only(left: 16, right: 16),
-              child: CustomButton("CADASTRAR", _onClickConfirmarAvalicao),
-            )
+            // Container(
+            //   padding: EdgeInsets.only(left: 16, right: 16),
+            //   child: CustomButton("CADASTRAR", _onClickConfirmarAvalicao),
+            // )
             //GridDashboard()
           ],
         ),
       ),
     );
+  }
+
+  String _txtData(PartidasRecentes partRecentes) {
+    var dataAbertura = DateTime.parse(partRecentes.data_abertura);
+    var dataFechamento = DateTime.parse(partRecentes.data_fechamento);
+
+    String dt_abertura = dateFormat.format(dataAbertura);
+    String dt_fechamento = hourFormat.format(dataFechamento);
+
+    return "$dt_abertura - $dt_fechamento";
   }
 
   _listPartidasRecentess() {
@@ -159,50 +204,10 @@ class _HomePageState extends State<JodadoresPartidasPage> {
                   ),
                 ],
               )),
-          trailing: _iconAvaliacao(jogador),
-          onTap: () => _rateDialog(context, jogador),
+          trailing: jogador.pago ? Icon(Icons.check) : Icon(Icons.monetization_on_rounded),
+          onTap: () => _onClickPagar(jogador),
         ),
       );
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Icon _iconAvaliacao(Jogador jogador) {
-    try {
-      if (jogador.avaliacao == null) {
-        return Icon(Icons.sentiment_neutral, color: Colors.white, size: 30.0);
-      } else {
-        switch (jogador.avaliacao.toString()) {
-          case "1.0":
-            return Icon(Icons.sentiment_very_dissatisfied,
-                color: Colors.white, size: 30.0);
-
-            break;
-          case "2.0":
-            return Icon(Icons.sentiment_dissatisfied,
-                color: Colors.white, size: 30.0);
-
-            break;
-          case "3.0":
-            return Icon(Icons.sentiment_neutral,
-                color: Colors.white, size: 30.0);
-
-            break;
-          case "4.0":
-            return Icon(Icons.sentiment_satisfied,
-                color: Colors.white, size: 30.0);
-
-            break;
-          case "5.0":
-            return Icon(Icons.sentiment_very_satisfied,
-                color: Colors.white, size: 30.0);
-            break;
-          default:
-            return Icon(Icons.sentiment_neutral,
-                color: Colors.white, size: 30.0);
-        }
-      }
     } catch (e) {
       print(e);
     }
@@ -223,64 +228,8 @@ class _HomePageState extends State<JodadoresPartidasPage> {
     );
   }
 
-  _rateDialog(BuildContext context, jogador) async {
-    try {
-      return showDialog(
-          context: context,
-          builder: (context) {
-            return new AlertDialog(
-              title: Text('Avalie Jogador'),
-              content: RatingBar.builder(
-                  initialRating: 3,
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    switch (index) {
-                      case 0:
-                        return Icon(
-                          Icons.sentiment_very_dissatisfied,
-                          color: Colors.red,
-                        );
-                      case 1:
-                        return Icon(
-                          Icons.sentiment_dissatisfied,
-                          color: Colors.redAccent,
-                        );
-                      case 2:
-                        return Icon(
-                          Icons.sentiment_neutral,
-                          color: Colors.amber,
-                        );
-                      case 3:
-                        return Icon(
-                          Icons.sentiment_satisfied,
-                          color: Colors.lightGreen,
-                        );
-                      case 4:
-                        return Icon(
-                          Icons.sentiment_very_satisfied,
-                          color: Colors.green,
-                        );
-                    }
-                  },
-                  onRatingUpdate: (rating) {
-                    jogador.avaliacao = rating;
-                  }),
-              actions: [
-                FlatButton(
-                  child: Text("Ok",
-                      style: GoogleFonts.lato(color: Colors.deepOrange)),
-                  onPressed: () => _okBtnFunction(jogador),
-                )
-              ],
-            );
-          });
-    } catch (e) {
-      print(e);
-    }
-  }
-
   Future<void> _onRefresh() {
-    return _bloc.getJogadoresByTimeId(widget.time.id.toString());
+    return _bloc.getJogadoresByPartida(widget.partidasRecentes);
   }
 
   Future<bool> _onBackPressed() async {
@@ -303,23 +252,44 @@ class _HomePageState extends State<JodadoresPartidasPage> {
     _bloc.dispose();
   }
 
-  _onClickConfirmarAvalicao() {
-    try {
-      List<AvaliacaoJogador> avaliacoesJogador = List();
+  _onClickPagar(Jogador jogador) async {
+    double total = widget.partidasRecentes.preco / jogadores.length;
 
-      jogadores.forEach((element) {
-        AvaliacaoJogador avaliacaoJogador = AvaliacaoJogador();
+    final Map<String, Object> preference = {
+      'items': [
+        {
+          'title': 'Test Product',
+          'description': 'Description',
+          'quantity': 1,
+          'currency_id': 'BRL',
+          'unit_price': total,
+        }
+      ],
+      'payer': {'name': 'Buyer G.', 'email': 'test@gmail.com'},
+    };
 
-        avaliacaoJogador.jogadorId = int.parse(element.id);
-        avaliacaoJogador.nota = element.avaliacao.toInt();
+    final response = (await MercadoPagoIntegration.startCheckout(
+      publicKey: "TEST-cb6fcf00-0dc2-4d60-abb7-c5b2f072a75f",
+      preference: preference,
+      accessToken:
+          "TEST-373716422145450-111002-2c5edffd163aaf27791da1785da6ab91-216354271",
+    ))
+        .fold((Failure failure) {
+      debugPrint('Failure => ${failure.message}');
+    }, (Payment payment) {
 
-        avaliacoesJogador.add(avaliacaoJogador);
+
+      debugPrint('Payment => ${payment.paymentId}');
+      setState(() {
+        jogador.pago = true;
       });
 
-      PartidasRecentesApi.insertAvaliacaoJogador(
-          avaliacoesJogador, widget.idPartida.toString());
-    } catch (e) {
-      print(e);
+
+    });
+
+
+    if (response) {
+
     }
   }
 }

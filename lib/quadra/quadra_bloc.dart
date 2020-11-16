@@ -14,10 +14,14 @@ class QuadraBloc extends SimpleBloc<List<Quadra>> {
 
   Future<List<Quadra>> getQuadraByEmpresa(String id) async {
 
-    final response = await QuadraApi.getQuadraByEmpresa(id);
+    try {
+      final response = await QuadraApi.getQuadraByEmpresa(id);
 
-    add(response);
+      add(response);
 
-    return response;
+      return response;
+    } catch (e) {
+      addError(e);
+    }
   }
 }

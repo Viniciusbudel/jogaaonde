@@ -11,6 +11,7 @@ class PartidasRecentes {
   String data_abertura;
   String data_fechamento;
   int quadra_id;
+  double preco;
   String quadra_descricao;
 
   PartidasRecentes(
@@ -26,22 +27,28 @@ class PartidasRecentes {
         this.data_abertura,
         this.quadra_id,
         this.quadra_descricao,
+        this.preco,
         this.atualizadoEm});
 
   PartidasRecentes.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    horarioQuadraId = json['horario_quadra_id'];
-    anfitriaoTimeId = json['anfitriao_time_id'];
-    convidadoTimeId = json['convidado_time_id'];
-    descricao = json['descricao'];
-    aceitaTime = json['aceita_time'];
-    excluido = json['excluido'];
-    criadoEm = json['criado_em'];
-    data_abertura = json['horario']["data_abertura"];
-    data_fechamento = json['horario']["data_fechamento"];
-    quadra_id = json['quadra']["id"];
-    quadra_descricao = json['quadra']["descricao"];
-    atualizadoEm = json['atualizado_em'];
+    try {
+      id = json['id'];
+      horarioQuadraId = json['horario_quadra_id'];
+      anfitriaoTimeId = json['anfitriao_time_id'];
+      convidadoTimeId = json['convidado_time_id'];
+      descricao = json['descricao'];
+      aceitaTime = json['aceita_time'];
+      excluido = json['excluido'];
+      criadoEm = json['criado_em'];
+      data_abertura = json['horario'] != null ? json['horario']["data_abertura"] : "";
+      data_fechamento =  json['horario'] != null ? json['horario']["data_fechamento"] : "";
+      preco =  json['horario'] != null ? json['horario']["preco"].toDouble() : 0.00;
+      quadra_id = json['quadra'] != null ? json['quadra']["id"] : 0;
+      quadra_descricao = json['quadra'] != null ? json['quadra']["descricao"] : "";
+      atualizadoEm = json['atualizado_em'];
+    } catch (e) {
+      print(e);
+    }
   }
 
   Map<String, dynamic> toJson() {

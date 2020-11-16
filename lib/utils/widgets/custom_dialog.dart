@@ -17,7 +17,7 @@ class DialogUtils {
         context: context,
         builder: (_) {
           return AlertDialog(
-            backgroundColor: Color(0xFF123c62),
+            backgroundColor: Color(0xFF05290C),
             title: Text(
               title,
               style: GoogleFonts.lato(fontWeight: FontWeight.bold,color: Colors.white),

@@ -8,10 +8,14 @@ class HorarioPartidaBloc extends SimpleBloc<List<HorarioPartida>> {
 
   Future<List<HorarioPartida>> getHorarioPartida(String data,String idQuadra) async {
 
-    List<HorarioPartida> response = await HorarioPartidaApi.getHorarioPartida(data,idQuadra);
+    try {
+      List<HorarioPartida> response = await HorarioPartidaApi.getHorarioPartida(data,idQuadra);
 
-    add(response);
+      add(response);
 
-    return response;
+      return response;
+    } catch (e) {
+      addError(e);
+    }
   }
 }

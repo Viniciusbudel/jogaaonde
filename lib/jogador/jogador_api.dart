@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
 import 'package:jogaaonde/jogador/jogador.dart';
+import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes.dart';
 import 'package:jogaaonde/utils/api_response.dart';
 import 'package:jogaaonde/utils/prefs.dart';
 
@@ -80,11 +81,11 @@ class JogadorApi {
         return jogadors;
       }
 
-      return null;
+      return throw Exception("Erro ao buscar");
     } catch (error, exception) {
       print("erro no login $error > $exception");
 
-      return null;
+      return throw Exception("Erro ao buscar");
     }
   }
 
@@ -92,28 +93,26 @@ class JogadorApi {
     try {
       String token = await Prefs.getString("token");
       var url = 'https://jogaaonde.com.br/jogador/buscar?nome=$nome';
-      if(nome.contains("@")){
-         url = 'https://jogaaonde.com.br/jogador/buscar?email=$nome';
+      if (nome.contains("@")) {
+        url = 'https://jogaaonde.com.br/jogador/buscar?email=$nome';
       }
-
 
       Map<String, String> headers = {"Authorization": "Bearer ${token}"};
       final response = await http.get(url, headers: headers);
       final jsonResponse = json.decode(response.body);
       final content = jsonResponse["content"];
 
-
-
       if (response.statusCode == 200) {
-        final jogadors = content.map<Jogador>((map) => Jogador.fromJson(map)).toList();
+        final jogadors =
+            content.map<Jogador>((map) => Jogador.fromJson(map)).toList();
         return jogadors;
       }
 
-      return null;
+      return throw Exception("Erro ao buscar");
     } catch (error, exception) {
       print("erro no login $error > $exception");
 
-      return null;
+      return throw Exception("Erro ao buscar");
     }
   }
 
@@ -133,17 +132,44 @@ class JogadorApi {
       List list = content[0]["integrantes"];
 
       if (response.statusCode == 200) {
-        final quadras =
+        final jogadores =
             list.map<Jogador>((map) => Jogador.fromJson(map)).toList();
 
-        return quadras;
+        return jogadores;
       }
 
-      return null;
+      return throw Exception("Erro ao buscar");
     } catch (error, exception) {
       print("erro no login $error > $exception");
 
-      return null;
+      return throw Exception("Erro ao buscar");
+    }
+  }
+
+  static Future<List<Jogador>> getJogadoresByPartida(
+      PartidasRecentes partidasRecentes) async {
+    try {
+      List<Jogador> jogadoresPartida = List();
+      int idTime = partidasRecentes.anfitriaoTimeId;
+
+      final jogadoresTimeAnfitriao =
+          await JogadorApi.getJogadoresByTimeId(idTime.toString());
+
+      if (partidasRecentes.convidadoTimeId != null) {
+        int idTimeConvidado = partidasRecentes.convidadoTimeId;
+
+        final jogadoresTimeConvidado =
+            await JogadorApi.getJogadoresByTimeId(idTimeConvidado.toString());
+        jogadoresPartida.addAll(jogadoresTimeConvidado);
+      }
+
+      jogadoresPartida.addAll(jogadoresTimeAnfitriao);
+
+      return jogadoresPartida;
+    } catch (error, exception) {
+      print("erro no login $error > $exception");
+
+      return throw Exception("Erro ao buscar");
     }
   }
 

@@ -11,9 +11,9 @@ import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes_bloc.dart
 import 'package:jogaaonde/social/social_page.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/utils/constants.dart';
-import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_dialog.dart';
+import 'package:jogaaonde/utils/widgets/custom_dialog.dart';
 import 'package:jogaaonde/utils/nav.dart';
-import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
+import 'package:jogaaonde/utils/widgets/custom_text_error.dart';
 import 'package:jogaaonde/utils/widgets/custom_search_row.dart';
 
 class ListaPartidasProximasPage extends StatefulWidget {
@@ -214,7 +214,7 @@ class _ListaPartidasProximasPageState extends State<ListaPartidasProximasPage> {
   }
 
   Future<void> _onRefresh() {
-    return _bloc.getPartidasRecentesByTime(widget.time.id.toString());
+    return _bloc.getPartidasAtivasByCidade(widget.time.cidade);
   }
 
   Future<bool> _onBackPressed() async {

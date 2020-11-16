@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:jogaaonde/jogador/jogador.dart';
 import 'package:jogaaonde/jogador/jogador_api.dart';
+import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes.dart';
 import 'package:jogaaonde/utils/api_response.dart';
 import 'package:jogaaonde/utils/simple_bloc.dart';
 
@@ -29,26 +30,49 @@ class JogadorBloc extends SimpleBloc<List<Jogador>> {
   }
 
   Future<Jogador> getJogador() async {
-    final response = await JogadorApi.getJogador();
+    try {
+      final response = await JogadorApi.getJogador();
 
-    //add(response);
+      //add(response);
 
-    return response;
+      return response;
+    } catch (e) {
+      addError(e);
+    }
   }
 
   Future<List<Jogador>> getJogadoresByTimeId(String id) async {
-    final response = await JogadorApi.getJogadoresByTimeId(id);
+    try {
+      final response = await JogadorApi.getJogadoresByTimeId(id);
 
-    add(response);
+      add(response);
 
-    return response;
+      return response;
+    } catch (e) {
+      addError(e);
+    }
+  }
+  Future<List<Jogador>> getJogadoresByPartida(PartidasRecentes partida) async {
+    try {
+      final response = await JogadorApi.getJogadoresByPartida(partida);
+
+      add(response);
+
+      return response;
+    } catch (e) {
+      addError(e);
+    }
   }
 
   Future<List<Jogador>> getJogadoresByNomeOrEmail(String nome) async {
-    final response = await JogadorApi.getJogadorByNomeOrEmail(nome);
+    try {
+      final response = await JogadorApi.getJogadorByNomeOrEmail(nome);
 
-    add(response);
+      add(response);
 
-    return response;
+      return response;
+    } catch (e) {
+      addError(e);
+    }
   }
 }

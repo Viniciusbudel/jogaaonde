@@ -20,6 +20,7 @@ class Jogador {
   String senha;
   String posicao;
   double avaliacao;
+  bool pago = false;
 
   Jogador({this.id,
     this.nome,
@@ -40,6 +41,7 @@ class Jogador {
     this.senha,
     this.posicao,
     this.avaliacao,
+    this.pago,
     this.fifa_times_id});
 
   Jogador.fromJson(Map<String, dynamic> json) {

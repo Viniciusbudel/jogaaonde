@@ -6,19 +6,30 @@ import 'package:jogaaonde/utils/simple_bloc.dart';
 class PartidasRecentesBloc extends SimpleBloc<List<PartidasRecentes>> {
   get stream => controller.stream;
 
-  Future<List<PartidasRecentes>> getPartidasRecentesByTime(String time) async {
-    final response = await PartidasRecentesApi.getPartidasRecentesByTime(time);
+  Future<List<PartidasRecentes>> getPartidasByTime(String time,bool proximas) async {
+    try {
+      final response = await PartidasRecentesApi.getPartidasByTime(time,proximas);
 
-    add(response);
+      add(response);
 
-    return response;
+
+      return response;
+    } catch (e) {
+      addError(e);
+    }
   }
+
 
   Future<List<PartidasRecentes>> getPartidasAtivasByCidade(String cidade) async {
-    final response = await PartidasRecentesApi.getPartidasByCidade(cidade);
+    try {
+      final response = await PartidasRecentesApi.getPartidasByCidade(cidade);
 
-    add(response);
+      add(response);
 
-    return response;
+      return response;
+    } catch (e) {
+      addError(e);
+    }
   }
+
 }

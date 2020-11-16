@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jogaaonde/empresa/empresa.dart';
 import 'package:jogaaonde/home/home_page.dart';
-import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/partidas/marcar_partida/selecionar_data_page.dart';
+import 'package:jogaaonde/partidas/marcar_partida/selecionar_data_page.dart';
 import 'package:jogaaonde/quadra/quadra.dart';
 import 'package:jogaaonde/quadra/quadra_bloc.dart';
 import 'package:jogaaonde/utils/constants.dart';
 import 'package:jogaaonde/utils/nav.dart';
-import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
+import 'package:jogaaonde/utils/widgets/custom_text_error.dart';
 
 class ListarQuadraPage extends StatefulWidget {
   Empresa empresa;

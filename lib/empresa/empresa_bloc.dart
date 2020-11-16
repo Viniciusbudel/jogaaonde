@@ -16,11 +16,15 @@ class EmpresaBloc extends SimpleBloc<List<Empresa>> {
 
   Future<List<Empresa>> getEmpresaByCidade(String cidade) async {
 
-    final response = await EmpresaApi.getEmpresaByCidade(cidade);
+    try {
+      final response = await EmpresaApi.getEmpresaByCidade(cidade);
 
-    add(response);
+      add(response);
 
-    return response;
+      return response;
+    } catch (e) {
+      addError(e);
+    }
   }
 
   // Future<List<Empresa>> listarEmpresas() async {

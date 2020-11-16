@@ -11,7 +11,7 @@ import 'package:jogaaonde/quadra/quadra_api.dart';
 import 'package:jogaaonde/social/social_page.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/utils/nav.dart';
-import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
+import 'package:jogaaonde/utils/widgets/custom_text_error.dart';
 
 class ListaPartidasRecentesPage extends StatefulWidget {
   Time time;
@@ -32,7 +32,7 @@ class _ListaPartidasRecentesPageState extends State<ListaPartidasRecentesPage> {
   @override
   void initState() {
     // TODO: implement initState
-    _bloc.getPartidasRecentesByTime(widget.time.id.toString());
+    _bloc.getPartidasByTime(widget.time.id.toString(), false);
     super.initState();
   }
 
@@ -60,7 +60,7 @@ class _ListaPartidasRecentesPageState extends State<ListaPartidasRecentesPage> {
                         icon: Icon(Icons.arrow_back_ios),
                         color: Colors.white70,
                         onPressed: () {
-                          push(context, HomePage());
+                          push(context, SocialPage());
                         },
                       ),
                       Padding(
@@ -136,47 +136,54 @@ class _ListaPartidasRecentesPageState extends State<ListaPartidasRecentesPage> {
 
   makeListTile(index, context) {
     PartidasRecentes partRecentes = quadras[index];
-    return GestureDetector(
-      onTap: () => _onClickPartRecente(partRecentes),
-      child: ListTile(
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-          isThreeLine: true,
-          leading: Container(
-            padding: EdgeInsets.only(right: 12.0),
-            decoration: new BoxDecoration(
-                border: new Border(
-                    right: new BorderSide(width: 1.0, color: Colors.white24))),
-            child: Icon(Icons.sports_soccer, color: Colors.white),
-          ),
-          title: Text(
-            partRecentes.descricao,
-            //c.ordemServico,
-            style: GoogleFonts.lato(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-          subtitle: Container(
-              padding: EdgeInsets.only(top: 2),
-              child: Column(
-
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    partRecentes.quadra_descricao,
-                    style: GoogleFonts.lato(fontSize: 14),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(top: 5),
-                    child: Text(
-                      _txtData(partRecentes),
-                      style: GoogleFonts.acme(fontSize: 15),
+    if (partRecentes.data_abertura.isNotEmpty &&
+        partRecentes.data_fechamento.isNotEmpty) {
+      return GestureDetector(
+        onTap: () => _onClickPartRecente(partRecentes),
+        child: ListTile(
+            contentPadding:
+                EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            isThreeLine: true,
+            leading: Container(
+              padding: EdgeInsets.only(right: 12.0),
+              decoration: new BoxDecoration(
+                  border: new Border(
+                      right:
+                          new BorderSide(width: 1.0, color: Colors.white24))),
+              child: Icon(Icons.sports_soccer, color: Colors.white),
+            ),
+            title: Text(
+              partRecentes.descricao,
+              //c.ordemServico,
+              style: GoogleFonts.lato(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18),
+            ),
+            subtitle: Container(
+                padding: EdgeInsets.only(top: 2),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      partRecentes.quadra_descricao,
+                      style: GoogleFonts.lato(fontSize: 14),
                     ),
-                  ),
-                ],
-              )),
-          trailing: Icon(Icons.keyboard_arrow_right,
-              color: Colors.white, size: 30.0)),
-    );
+                    Container(
+                      padding: EdgeInsets.only(top: 5),
+                      child: Text(
+                        _txtData(partRecentes),
+                        style: GoogleFonts.acme(fontSize: 15),
+                      ),
+                    ),
+                  ],
+                )),
+            trailing: Icon(Icons.keyboard_arrow_right,
+                color: Colors.white, size: 30.0)),
+      );
+    } else {
+      return Container();
+    }
   }
 
   String _txtData(PartidasRecentes partRecentes) {
@@ -190,7 +197,6 @@ class _ListaPartidasRecentesPageState extends State<ListaPartidasRecentesPage> {
   }
 
   Card makeCard(int index, context) {
-
     return Card(
       elevation: 8.0,
       margin: new EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
@@ -208,7 +214,7 @@ class _ListaPartidasRecentesPageState extends State<ListaPartidasRecentesPage> {
   }
 
   Future<void> _onRefresh() {
-    return _bloc.getPartidasRecentesByTime(widget.time.id.toString());
+    return _bloc.getPartidasByTime(widget.time.id.toString(), false);
   }
 
   Future<bool> _onBackPressed() async {
@@ -216,10 +222,7 @@ class _ListaPartidasRecentesPageState extends State<ListaPartidasRecentesPage> {
   }
 
   _onClickPartRecente(PartidasRecentes partidasRecentes) async {
-
     final quadra = await QuadraApi.getQuadraById(partidasRecentes.quadra_id);
-    push(context, AvaliarQuadraPage(quadra,widget.time,partidasRecentes.id));
-
-
+    push(context, AvaliarQuadraPage(quadra, widget.time, partidasRecentes.id));
   }
 }

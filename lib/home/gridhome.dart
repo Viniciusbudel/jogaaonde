@@ -4,7 +4,7 @@ import 'package:jogaaonde/jogador/cadastro_jogador_page.dart';
 import 'package:jogaaonde/jogador/jogador.dart';
 import 'package:jogaaonde/jogador/jogador_bloc.dart';
 import 'package:jogaaonde/login/login_page.dart';
-import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/partidas/marcar_partida/selecionar_time_page.dart';
+import 'package:jogaaonde/partidas/marcar_partida/selecionar_time_page.dart';
 import 'package:jogaaonde/pagamento/pagamento_teste.dart';
 import 'package:jogaaonde/quadra/quadra_page.dart';
 import 'package:jogaaonde/social/social_page.dart';

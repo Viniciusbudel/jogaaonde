@@ -5,13 +5,13 @@ import 'package:jogaaonde/empresa/empresa.dart';
 import 'package:jogaaonde/home/home_page.dart';
 import 'package:jogaaonde/partidas/partidas_recentes/jogadores_partida_page.dart';
 import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes_api.dart';
-import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/partidas/marcar_partida/selecionar_data_page.dart';
+import 'package:jogaaonde/partidas/marcar_partida/selecionar_data_page.dart';
 import 'package:jogaaonde/quadra/quadra.dart';
 import 'package:jogaaonde/quadra/quadra_bloc.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/utils/constants.dart';
 import 'package:jogaaonde/utils/nav.dart';
-import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
+import 'package:jogaaonde/utils/widgets/custom_text_error.dart';
 import 'package:jogaaonde/utils/widgets/custom_button.dart';
 
 class AvaliarQuadraPage extends StatefulWidget {
@@ -204,8 +204,12 @@ class _AvaliarQuadraPageState extends State<AvaliarQuadraPage> {
   Future<void> asyncFunc() async {
     final response = await PartidasRecentesApi.insertAvaliacaoQuadra(
         ratingAtual, widget.idPartida);
+
+
     if (response.ok) {
       push(context, JodadoresPartidasPage(widget.time, widget.idPartida));
+    }else{
+
     }
   }
 }

@@ -29,11 +29,11 @@ class CampeonatoApi{
         return quadras;
       }
 
-      return null;
+      return throw Exception("Erro ao buscar");
     } catch (error, exception) {
       print("erro no login $error > $exception");
 
-      return null;
+      return throw Exception("Erro ao buscar");
     }
   }
 
@@ -42,17 +42,22 @@ class CampeonatoApi{
     try {
       String token = await Prefs.getString("token");
 
-      final params = {"campeonato_id": idCampeonato, "time_id": idTime};
+      int idCamp = int.parse(idCampeonato);
+      int idTim = int.parse(idTime);
 
-      var url = 'https://jogaaonde.com.br/jogador/campeonato/add_jogador';
+      final params = {"campeonato_id": idCamp, "time_id": idTim};
+
+      var url = 'https://jogaaonde.com.br/jogador/campeonato/add_time';
+      String body = json.encode(params);
 
       Map<String, String> headers = {"Authorization": "Bearer ${token}"};
 
-      final response = await http.post(url, body: params, headers: headers);
-
+      final response = await http.post(url, body: body, headers: headers);
       Map mapResponse = json.decode(response.body);
 
       if (response.statusCode == 200) {
+
+
         return ApiResponse.ok(mapResponse["message"]);
 
       }else{

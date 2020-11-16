@@ -26,11 +26,11 @@ class QuadraApi{
         return quadras;
       }
 
-      return null;
+      return throw Exception("Erro ao buscar");
     } catch (error, exception) {
       print("erro no login $error > $exception");
 
-      return null;
+      return throw Exception("Erro ao buscar");
     }
   }
   static Future<Quadra> getQuadraById(id) async {
@@ -51,11 +51,11 @@ class QuadraApi{
         return quadras;
       }
 
-      return null;
+      return throw Exception("Erro ao buscar");
     } catch (error, exception) {
       print("erro no login $error > $exception");
 
-      return null;
+      return throw Exception("Erro ao buscar");
     }
   }
 }

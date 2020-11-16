@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:jogaaonde/home/home_page.dart';
+import 'package:jogaaonde/partidas/minhas_partidas/jogadores_partida_pagamento_page.dart';
 import 'package:jogaaonde/partidas/partidas_recentes/jogadores_partida_page.dart';
 import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes.dart';
 import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes_bloc.dart';
-
 import 'package:jogaaonde/social/social_page.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/utils/nav.dart';
-import 'file:///C:/Users/softwar02/AndroidStudioProjects/jogaaonde/lib/utils/widgets/custom_text_error.dart';
+import 'package:jogaaonde/utils/widgets/custom_text_error.dart';
 
 class ListaMinhasPartidasPage extends StatefulWidget {
   Time time;
@@ -31,7 +31,7 @@ class _ListaMinhasPartidasPageState extends State<ListaMinhasPartidasPage> {
   @override
   void initState() {
     // TODO: implement initState
-    _bloc.getPartidasRecentesByTime(widget.time.id.toString());
+    _bloc.getPartidasByTime(widget.time.id.toString(), true);
     super.initState();
   }
 
@@ -136,7 +136,7 @@ class _ListaMinhasPartidasPageState extends State<ListaMinhasPartidasPage> {
   makeListTile(index, context) {
     PartidasRecentes partRecentes = quadras[index];
     return GestureDetector(
-      onTap: () => _onClickPartRecente(partRecentes.id),
+      onTap: () => _onClickPartRecente(partRecentes),
       child: ListTile(
           contentPadding:
               EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
@@ -205,14 +205,15 @@ class _ListaMinhasPartidasPageState extends State<ListaMinhasPartidasPage> {
   }
 
   Future<void> _onRefresh() {
-    return _bloc.getPartidasRecentesByTime(widget.time.id.toString());
+    return _bloc.getPartidasByTime(widget.time.id.toString(),true);
   }
 
   Future<bool> _onBackPressed() async {
     push(context, SocialPage());
   }
 
-  _onClickPartRecente(int id) {
-    push(context, JodadoresPartidasPage(widget.time, id));
+  _onClickPartRecente(PartidasRecentes partidasRecentes) {
+
+    push(context, JodadoresPartidasPagamentoPage(partidasRecentes));
   }
 }
