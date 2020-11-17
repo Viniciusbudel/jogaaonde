@@ -20,14 +20,18 @@ class TimeBloc extends SimpleBloc<List<Time>> {
     return response;
   }
 
-  Future<ApiResponse<Time>> addJogadorTime(String idJogador,idTime) async {
+  Future<ApiResponse<Time>> addJogadorTime(String idJogador, String idTime) async {
     //add(true);
 
-    ApiResponse response = await TimeApi.addJogadorTime(idJogador,idTime);
+    try {
+      ApiResponse response = await TimeApi.addJogadorTime(idJogador,idTime);
 
-    //add(false);
+      //add(false);
 
-    return response;
+      return response;
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<ApiResponse<Time>> updtaeTime(Time c) async {

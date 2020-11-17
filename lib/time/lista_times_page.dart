@@ -80,10 +80,11 @@ class _ListarTimePageState extends State<ListarTimePage> {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              "Listar Time",
+                              _txtTitle(),
+                              maxLines: 2,
                               style: GoogleFonts.lato(
                                   color: Color(0xffa29aac),
-                                  fontSize: 14,
+                                  fontSize: 15,
                                   fontWeight: FontWeight.w600),
                             ),
                           ],
@@ -234,32 +235,55 @@ class _ListarTimePageState extends State<ListarTimePage> {
     }
   }
 
+  _txtTitle() {
+    switch (widget.origem) {
+      case "campeonato":
+        return "Selecione o time para\ninscrever no campeonato";
+        break;
+      case "home":
+        return "Seus Times";
+        break;
+      case "partidasRecentes":
+        return "Selecione o time que\ndeseseja avaliar partida";
+        break;
+      case "procurarPartida":
+        return "Selecione o time que\ndeseseja procurar partidas";
+        break;
+      case "minhasReservas":
+        return "Selecione o time que \ndeseja consultar reservas";
+        break;
+      default:
+        return "Selecione o time desejado ";
+        break;
+    }
+  }
+
   Future _insertTimeCampeonato(Time c) async {
     try {
-
       Navigator.of(this.context).pop();
       final _bloc = CampeonatoBloc();
-      final response = await _bloc.insertTimeCampeonato(c.id.toString(), widget.idCampeonato);
+      final response = await _bloc.insertTimeCampeonato(
+          c.id.toString(), widget.idCampeonato);
 
       if (response.ok) {
-            DialogUtils.showCustomDialog(context,
-                title: response.msg,
-                okBtnText: "Ok",
-                cancelBtnText: "",
-                okBtnFunction: () =>
-                    push(context, ListarTimePage("home")) //Fazer algo
-                //Fazer algo
-                );
-          } else {
-            DialogUtils.showCustomDialog(context,
-                title: response.msg,
-                okBtnText: "Ok",
-                cancelBtnText: "",
-                okBtnFunction: () => Navigator.pop(context)
-                //push(context, JogadorsPage("home")) //Fazer algo
-                //Fazer algo
-                );
-          }
+        DialogUtils.showCustomDialog(context,
+            title: response.msg,
+            okBtnText: "Ok",
+            cancelBtnText: "",
+            okBtnFunction: () =>
+                push(context, ListarTimePage("home")) //Fazer algo
+            //Fazer algo
+            );
+      } else {
+        DialogUtils.showCustomDialog(context,
+            title: response.msg,
+            okBtnText: "Ok",
+            cancelBtnText: "",
+            okBtnFunction: () => Navigator.pop(context)
+            //push(context, JogadorsPage("home")) //Fazer algo
+            //Fazer algo
+            );
+      }
     } catch (e) {
       print(e);
     }

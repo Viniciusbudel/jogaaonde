@@ -11,6 +11,7 @@ import 'package:jogaaonde/quadra/quadra_bloc.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/utils/constants.dart';
 import 'package:jogaaonde/utils/nav.dart';
+import 'package:jogaaonde/utils/widgets/custom_dialog.dart';
 import 'package:jogaaonde/utils/widgets/custom_text_error.dart';
 import 'package:jogaaonde/utils/widgets/custom_button.dart';
 
@@ -97,7 +98,7 @@ class _AvaliarQuadraPageState extends State<AvaliarQuadraPage> {
                 SizedBox(height: 10),
                 _avaliacao(),
                 SizedBox(height: 10),
-                CustomButton("CONFIRAMR", asyncFunc)
+                CustomButton("AVALIAR", asyncFunc)
                 //GridDashboard()
               ],
             ),
@@ -208,7 +209,14 @@ class _AvaliarQuadraPageState extends State<AvaliarQuadraPage> {
     if (response.ok) {
       push(context, JodadoresPartidasPage(widget.time, widget.idPartida));
     } else {
-
+      DialogUtils.showCustomDialog(context,
+          title: response.msg,
+          okBtnText: "Ok",
+          cancelBtnText: "",
+          okBtnFunction: () => Navigator.pop(context)
+        //push(context, JogadorsPage("home")) //Fazer algo
+        //Fazer algo
+      );
     }
   }
 }

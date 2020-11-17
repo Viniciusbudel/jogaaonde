@@ -219,16 +219,17 @@ class _ListarTimesProximosPageState extends State<ListarTimesProximosPage> {
 
   Future _joinTime(Time time) async {
     id = await Prefs.getString("id");
+    Navigator.of(context).pop();
 
-    final response = await _bloc.addJogadorTime(id, time.id);
+
+    final response = await _bloc.addJogadorTime(id, time.id.toString());
 
     if (response.ok) {
       DialogUtils.showCustomDialog(context,
-          title: response.msg,
+          title: "Sucesso você se juntou ao time",
           okBtnText: "Ok",
           cancelBtnText: "",
-          okBtnFunction: () =>
-              push(context, ListarTimePage("home")) //Fazer algo
+          okBtnFunction: () => push(context, ListarTimePage("home")) //Fazer algo
           //Fazer algo
           );
     } else {

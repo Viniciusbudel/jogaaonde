@@ -99,7 +99,7 @@ class TimeApi {
     try {
       String token = await Prefs.getString("token");
 
-      var url = 'https://jogaaonde.com.br/jogador/time/buscar?cidade=$cidade';
+      var url = 'https://jogaaonde.com.br/jogador/time/buscar?cidade=$cidade&aceita_time=true';
 
       Map<String, String> headers = {"Authorization": "Bearer ${token}"};
 
@@ -131,9 +131,11 @@ class TimeApi {
 
       var url = 'https://jogaaonde.com.br/jogador/time/add_jogador';
 
+
+      final body = jsonEncode(params);
       Map<String, String> headers = {"Authorization": "Bearer ${token}"};
 
-      final response = await http.post(url, body: params, headers: headers);
+      final response = await http.post(url, body: body, headers: headers);
 
       Map mapResponse = json.decode(response.body);
 
