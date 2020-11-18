@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jogaaonde/campeonato/campeonato.dart';
 import 'package:jogaaonde/campeonato/campeonato_bloc.dart';
+import 'package:jogaaonde/campeonato/campeonato_page.dart';
 import 'package:jogaaonde/home/home_page.dart';
 import 'package:jogaaonde/time/lista_times_page.dart';
 import 'package:jogaaonde/time/time.dart';
@@ -58,7 +59,7 @@ class _ListarCampeonatoPageState extends State<ListarCampeonatoPage> {
                         icon: Icon(Icons.arrow_back_ios),
                         color: Colors.white70,
                         onPressed: () {
-                          push(context, HomePage());
+                          push(context, CampeonatoPage());
                         },
                       ),
 

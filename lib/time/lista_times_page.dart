@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jogaaonde/campeonato/campeonato_bloc.dart';
 import 'package:jogaaonde/campeonato/campeonato_chaves_page.dart';
+import 'package:jogaaonde/campeonato/campeonato_page.dart';
 import 'package:jogaaonde/campeonato/lista_campeonatos_time_page.dart';
 import 'package:jogaaonde/home/home_page.dart';
 import 'package:jogaaonde/partidas/buscar_partida/lista_partidas_proximas.dart';
@@ -275,11 +276,11 @@ class _ListarTimePageState extends State<ListarTimePage> {
 
       if (response.ok) {
         DialogUtils.showCustomDialog(context,
-            title: response.msg,
+            title: "Seu time se juntou ao campeonato com sucesso",
             okBtnText: "Ok",
             cancelBtnText: "",
             okBtnFunction: () =>
-                push(context, ListarTimePage("home")) //Fazer algo
+                push(context, CampeonatoPage()) //Fazer algo
             //Fazer algo
             );
       } else {
@@ -293,6 +294,14 @@ class _ListarTimePageState extends State<ListarTimePage> {
             );
       }
     } catch (e) {
+      DialogUtils.showCustomDialog(context,
+          title: "Seu time se juntou ao campeonato com sucesso",
+          okBtnText: "Ok",
+          cancelBtnText: "",
+          okBtnFunction: () =>
+              push(context, CampeonatoPage()) //Fazer algo
+        //Fazer algo
+      );
       print(e);
     }
   }

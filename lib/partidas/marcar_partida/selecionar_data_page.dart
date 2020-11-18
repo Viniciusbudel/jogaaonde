@@ -10,6 +10,7 @@ import 'package:jogaaonde/utils/constants.dart';
 import 'package:jogaaonde/utils/widgets/custom_dialog.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'package:jogaaonde/utils/widgets/custom_text_error.dart';
+import 'package:jogaaonde/utils/widgets/custom_text_field.dart';
 
 class SelecionarData extends StatefulWidget {
   String idTime;
@@ -24,6 +25,7 @@ class SelecionarData extends StatefulWidget {
 class _HomeState extends State<SelecionarData> {
   bool showProgress = false;
   TextEditingController _date = new TextEditingController();
+  TextEditingController _tDescricao = new TextEditingController();
   DateTime selectedDate = DateTime.now();
   DateTime dateNow = DateTime.now();
   String data;
@@ -48,6 +50,7 @@ class _HomeState extends State<SelecionarData> {
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: Scaffold(
+          resizeToAvoidBottomPadding : false,
         backgroundColor: Color(0xFF05290C),
         body: Column(
           children: <Widget>[
@@ -73,7 +76,7 @@ class _HomeState extends State<SelecionarData> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          "Joga Aonde",
+                          "Confirmar Partida",
                           style: GoogleFonts.lato(
                               color: Colors.white,
                               fontSize: 18,
@@ -93,8 +96,12 @@ class _HomeState extends State<SelecionarData> {
                 ],
               ),
             ),
-            //SizedBox(height: 10),
-
+            SizedBox(height: 2),
+            Padding(
+              padding: EdgeInsets.only(left: 8, right: 8),
+              child: CustomTextField("Descrição", "De uma descrição para a partida", _tDescricao, Icons.description),
+            ),
+            SizedBox(height: 2),
             _datePicker(context),
             _listHorarios(),
 
@@ -110,7 +117,7 @@ class _HomeState extends State<SelecionarData> {
 
   Container _datePicker(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 50, right: 16, left: 16),
+      padding: EdgeInsets.only(top: 20, right: 16, left: 16),
       child: GestureDetector(
         onTap: () => _selectDate(context),
         child: AbsorbPointer(
@@ -153,7 +160,7 @@ class _HomeState extends State<SelecionarData> {
 
   _list(List<HorarioPartida> horarios, String idTime) {
     return Container(
-      height: 600,
+      height: 500,
       child: ListView.builder(
         //physics: NeverScrollableScrollPhysics(),
         //shrinkWrap: true,
@@ -285,7 +292,7 @@ class _HomeState extends State<SelecionarData> {
       aceitaTime: true,
       anfitriaoTimeId: int.parse(widget.idTime),
       convidadoTimeId: null,
-      descricao: "Teste",
+      descricao: _tDescricao.text,
       horarioQuadraId: horarioSelecionado.id,
     );
 
@@ -296,7 +303,7 @@ class _HomeState extends State<SelecionarData> {
           title: "Partida criada com Sucesso!",
           okBtnText: "Ok",
           cancelBtnText: "",
-          okBtnFunction: () => Navigator.pop(context)
+          okBtnFunction: () => push(context, HomePage())
           //push(context, TimesPage("home")) //Fazer algo
           //Fazer algo
           );

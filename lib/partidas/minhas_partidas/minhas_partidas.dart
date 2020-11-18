@@ -76,7 +76,7 @@ class _ListaMinhasPartidasPageState extends State<ListaMinhasPartidasPage> {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              "Listar Partidas Recentes",
+                              "Minhas Partidas",
                               style: GoogleFonts.lato(
                                   color: Color(0xffa29aac),
                                   fontSize: 14,

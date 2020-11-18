@@ -66,7 +66,7 @@ class CampeonatoApi {
       return throw Exception("Erro ao buscar");
     }
   }
-  static Future<CampeonatoChaves> getCampeonatoChavesById(String timeId) async {
+  static Future<ApiResponse<CampeonatoChaves>> getCampeonatoChavesById(String timeId) async {
     try {
       String token = await Prefs.getString("token");
 
@@ -82,14 +82,14 @@ class CampeonatoApi {
       if (response.statusCode == 200) {
         final camp =  CampeonatoChaves.fromJson(mapResponse["content"]);
 
-        return camp;
+        return ApiResponse.ok(camp);
       }
 
-      return throw Exception("Erro ao buscar");
+      return ApiResponse.error(mapResponse["message"]);
     } catch (error, exception) {
       print("erro no login $error > $exception");
 
-      return throw Exception("Erro ao buscar");
+      return ApiResponse.error("Nenhuma partida encontrada para este campeonato");
     }
   }
 

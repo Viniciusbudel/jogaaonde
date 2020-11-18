@@ -45,11 +45,15 @@ class CampeonatoBloc extends SimpleBloc<List<Campeonato>> {
   Future<ApiResponse<Campeonato>> insertTimeCampeonato(String idTime,idCampeonato) async {
     //add(true);
 
-    ApiResponse response = await CampeonatoApi.insertTimeCampeonato(idTime,idCampeonato);
+    try {
+      ApiResponse response = await CampeonatoApi.insertTimeCampeonato(idTime,idCampeonato);
 
-    //add(false);
+      //add(false);
 
-    return response;
+      return response;
+    } catch (e) {
+      addError(e);
+    }
   }
   // Future<List<Campeonato>> listarCampeonatosPorNome(String nome) async {
   //   try {

@@ -14,15 +14,17 @@ import 'package:jogaaonde/time/time_page.dart';
 import 'package:jogaaonde/utils/constants.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'package:jogaaonde/utils/prefs.dart';
+import 'package:jogaaonde/utils/widgets/custom_dialog.dart';
 import 'package:jogaaonde/utils/widgets/custom_text_error.dart';
 
 class ListarCampeonatoTimePage extends StatefulWidget {
-
   String timeId;
+
   ListarCampeonatoTimePage(this.timeId);
 
   @override
-  _ListarCampeonatoTimePageState createState() => _ListarCampeonatoTimePageState();
+  _ListarCampeonatoTimePageState createState() =>
+      _ListarCampeonatoTimePageState();
 }
 
 class _ListarCampeonatoTimePageState extends State<ListarCampeonatoTimePage> {
@@ -64,7 +66,7 @@ class _ListarCampeonatoTimePageState extends State<ListarCampeonatoTimePage> {
                         icon: Icon(Icons.arrow_back_ios),
                         color: Colors.white70,
                         onPressed: () {
-                          push(context, HomePage());
+                          push(context, CampeonatoPage());
                         },
                       ),
 
@@ -145,43 +147,67 @@ class _ListarCampeonatoTimePageState extends State<ListarCampeonatoTimePage> {
   }
 
   makeListTile(index, context) {
-    Campeonato c = times[index];
-    return GestureDetector(
-      onTap: () async {
-        final response = await CampeonatoApi.getCampeonatoChavesById(c.id.toString());
-        c.qtdParticipantes == 4 ?
+    try {
+      Campeonato c = times[index];
+      return GestureDetector(
+        onTap: () async {
+          final response =
+              await CampeonatoApi.getCampeonatoChavesById(c.id.toString());
+          if (response.ok) {
+            c.qtdParticipantes == 4
+                ? push(context, ListarCampeonatoChavePage(response.result))
+                : push(context, ListarCampeonato8ChavePage(response.result));
+          } else {
+            DialogUtils.showCustomDialog(context,
+                title: response.msg,
+                okBtnText: "Ok",
+                cancelBtnText: "",
+                okBtnFunction: () => Navigator.pop(context)
+                //push(context, JogadorsPage("home")) //Fazer algo
+                //Fazer algo
+                );
+          }
+        },
+        child: ListTile(
+            contentPadding:
+                EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            leading: Container(
+              padding: EdgeInsets.only(right: 12.0),
+              decoration: new BoxDecoration(
+                  border: new Border(
+                      right:
+                          new BorderSide(width: 1.0, color: Colors.white24))),
+              child: Image.asset(
+                "assets/images/campeonato_128.png",
+                width: 42,
+              ),
+            ),
+            title: Text(
+              c.nome,
+              style: GoogleFonts.lato(
+                  color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+            // subtitle: Text("Intermediate", style: GoogleFonts.lato(color: Colors.white)),
 
-        push(context, ListarCampeonatoChavePage(response)) : push(context, ListarCampeonato8ChavePage(response));
-      },
-      child: ListTile(
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-          leading: Container(
-            padding: EdgeInsets.only(right: 12.0),
-            decoration: new BoxDecoration(
-                border: new Border(
-                    right: new BorderSide(width: 1.0, color: Colors.white24))),
-            child: Image.asset("assets/images/campeonato_128.png",width: 42,),
-          ),
-          title: Text(
-            c.nome,
-            style: GoogleFonts.lato(
-                color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          // subtitle: Text("Intermediate", style: GoogleFonts.lato(color: Colors.white)),
-
-
-
-          subtitle: Text(
-            c.descricao +"\nParticipantes "+c.qtdParticipantes.toString(),
-            style: GoogleFonts.lato(
-                color: Colors.white, fontWeight: FontWeight.normal),
-          ),
-          isThreeLine: true,
-
-          trailing: Icon(Icons.keyboard_arrow_right,
-              color: Colors.white, size: 30.0)),
-    );
+            subtitle: Text(
+              c.descricao + "\nParticipantes " + c.qtdParticipantes.toString(),
+              style: GoogleFonts.lato(
+                  color: Colors.white, fontWeight: FontWeight.normal),
+            ),
+            isThreeLine: true,
+            trailing: Icon(Icons.keyboard_arrow_right,
+                color: Colors.white, size: 30.0)),
+      );
+    } catch (e) {
+      DialogUtils.showCustomDialog(context,
+          title: "Esse campeonato ainda não tem partidas!",
+          okBtnText: "Ok",
+          cancelBtnText: "",
+          okBtnFunction: () => Navigator.pop(context)
+          //push(context, JogadorsPage("home")) //Fazer algo
+          //Fazer algo
+          );
+    }
   }
 
   Card makeCard(int index, context) {

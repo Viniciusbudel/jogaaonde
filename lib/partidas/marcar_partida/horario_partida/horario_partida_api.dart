@@ -28,7 +28,7 @@ class HorarioPartidaApi {
       return throw Exception("Erro ao buscar");
     } catch (error, exception) {
       print("erro no login $error > $exception");
-      return null;
+      return throw Exception("Erro ao buscar");
     }
   }
 }
