@@ -4,12 +4,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:jogaaonde/home/home_page.dart';
 import 'package:jogaaonde/jogador/jogador.dart';
 import 'package:jogaaonde/jogador/jogador_bloc.dart';
+import 'package:jogaaonde/jogador/posicao_jogador/posicao_jogador.dart';
+import 'package:jogaaonde/jogador/posicao_jogador/posicao_jogador_bloc.dart';
 import 'package:jogaaonde/login/login_page.dart';
 import 'package:jogaaonde/social/social_page.dart';
 import 'package:jogaaonde/utils/api_response.dart';
 import 'package:jogaaonde/utils/constants.dart';
 import 'package:jogaaonde/utils/widgets/custom_dialog.dart';
 import 'package:jogaaonde/utils/nav.dart';
+import 'package:jogaaonde/utils/widgets/custom_text_error.dart';
 import 'package:via_cep/via_cep.dart';
 
 class CadastrarJogadorPage extends StatefulWidget {
@@ -26,10 +29,13 @@ class CadastrarJogadorPage extends StatefulWidget {
 class _HomePageState extends State<CadastrarJogadorPage> {
   String dropdownValue;
   final _formKey = GlobalKey<FormState>();
+  PosicaoJogador _dropdownValue;
+  List<PosicaoJogador> posicoes;
 
   bool showProgress = false;
 
   final _jogadorBloc = JogadorBloc();
+  final _posicaorBloc = PosicaoJogadorBloc();
 
   final _tNome = TextEditingController();
   final _tCpf = TextEditingController();
@@ -52,6 +58,7 @@ class _HomePageState extends State<CadastrarJogadorPage> {
   @override
   void initState() {
     // TODO: implement initState
+    _posicaorBloc.getPosicaoJogador();
      if (widget.jogador != null) {
        _loadData();
      }
@@ -150,6 +157,8 @@ class _HomePageState extends State<CadastrarJogadorPage> {
                         _tCpf,
                         cpf: true,
                       ),
+                      SizedBox(height: 20),
+                      _dropDownsList(),
                       SizedBox(height: 20),
                       _buildTF("CEP", "Digite o CEP do jogador",
                           Icons.gps_fixed, _tCep,
@@ -351,6 +360,94 @@ class _HomePageState extends State<CadastrarJogadorPage> {
     );
   }
 
+  Widget _dropDown() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          "Posição",
+          style: kLabelStyle,
+        ),
+        SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: kBoxDecorationRequiredStyle,
+          height: 60.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Expanded(
+                flex: 1,
+                child: Container(
+                    padding: EdgeInsets.all(8),
+                    child: Icon(
+                      Icons.person,
+                      color: Colors.green,
+                    )),
+              ),
+              Expanded(
+                flex: 7,
+                child: Container(
+                  margin: EdgeInsets.only(right: 16),
+                  //alignment: Alignment.center,
+                  child: DropdownButtonHideUnderline(
+                    child: Theme(
+                      data: Theme.of(context).copyWith(
+                        canvasColor: Colors.white,
+                      ),
+                      child: DropdownButton<PosicaoJogador>(
+                        value: _dropdownValue,
+                        style: GoogleFonts.lato(color: Colors.white54),
+                        onChanged: (PosicaoJogador newValue) {
+                          _dropdownValue = newValue;
+                          setState(() {
+                            _dropdownValue;
+                          });
+                        },
+                        items:
+                        posicoes.map<DropdownMenuItem<PosicaoJogador>>((PosicaoJogador value) {
+                          return DropdownMenuItem<PosicaoJogador>(
+                            value: value,
+                            child: Text(
+                              value.descricao,
+                              style: TextStyle(color: Colors.green),
+                            ),
+                          );
+                        }).toList(),
+                        hint: Text(
+                          'Selecione a posicao',
+                          style: kFieldGreenTextStyle,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+
+  _dropDownsList() {
+    return StreamBuilder(
+        stream: _posicaorBloc.stream,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return TextError("Não foi possivel buscar os dados!");
+          }
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          posicoes = snapshot.data;
+          return RefreshIndicator(onRefresh: _onRefresh, child: _dropDown());
+        });
+  }
+
   onClickCadastrarJogador() async {
     if (_formKey.currentState.validate()) {
       setState(() {
@@ -390,7 +487,8 @@ class _HomePageState extends State<CadastrarJogadorPage> {
             title: "Jogador Cadastrado com Sucesso!",
             okBtnText: "Ok",
             cancelBtnText: "",
-            okBtnFunction: () => push(context, HomePage())
+            okBtnFunction: () =>      widget.jogador != null ?
+          push(context, HomePage()) : push(context, LoginScreen())
           //push(context, JogadorsPage("home")) //Fazer algo
           //Fazer algo
         );
@@ -459,5 +557,10 @@ class _HomePageState extends State<CadastrarJogadorPage> {
       push(context, LoginScreen()); //Fazer algo
 
     }
+  }
+
+  Future<void> _onRefresh() {
+    _posicaorBloc.getPosicaoJogador();
+
   }
 }

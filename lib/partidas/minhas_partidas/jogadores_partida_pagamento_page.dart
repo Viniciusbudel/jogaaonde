@@ -5,11 +5,15 @@ import 'package:intl/intl.dart';
 import 'package:jogaaonde/home/home_page.dart';
 import 'package:jogaaonde/jogador/jogador.dart';
 import 'package:jogaaonde/jogador/jogador_bloc.dart';
+import 'package:jogaaonde/pagamento/jogadores_pagamento.dart';
+import 'package:jogaaonde/pagamento/jogadores_pagamento_api.dart';
+import 'package:jogaaonde/pagamento/jogadores_pagamento_bloc.dart';
 import 'package:jogaaonde/partidas/partidas_recentes/avaliacao_jogador.dart';
 import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes.dart';
 import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes_api.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/utils/nav.dart';
+import 'package:jogaaonde/utils/widgets/custom_dialog.dart';
 import 'package:jogaaonde/utils/widgets/custom_text_error.dart';
 import 'package:jogaaonde/utils/widgets/custom_button.dart';
 import 'package:mercado_pago_integration/core/failures.dart';
@@ -27,14 +31,14 @@ class JodadoresPartidasPagamentoPage extends StatefulWidget {
 
 class _HomePageState extends State<JodadoresPartidasPagamentoPage> {
   String dropdownValue = "";
-  List<Jogador> jogadores;
-  final _bloc = JogadorBloc();
+  List<JogadorPagamento> jogadores;
+  final _bloc = JogadorPagamentoBloc();
   DateFormat dateFormat = DateFormat("dd/MM/yyyy HH:mm:ss");
   DateFormat hourFormat = DateFormat("HH:mm:ss");
 
   @override
   void initState() {
-    _bloc.getJogadoresByPartida(widget.partidasRecentes);
+    _bloc.getJogadorPagamentoByPartidaId(widget.partidasRecentes.id.toString());
 
     super.initState();
   }
@@ -147,7 +151,7 @@ class _HomePageState extends State<JodadoresPartidasPagamentoPage> {
         stream: _bloc.stream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return TextError("Não foi possivel buscar os dados!");
+            return TextError("Nenhum registro encontrado!");
           }
           if (!snapshot.hasData) {
             return Center(
@@ -162,7 +166,7 @@ class _HomePageState extends State<JodadoresPartidasPagamentoPage> {
         });
   }
 
-  _listViewPartidasRecentess(List<Jogador> jogadores) {
+  _listViewPartidasRecentess(List<JogadorPagamento> jogadores) {
     return ListView.builder(
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
@@ -173,13 +177,13 @@ class _HomePageState extends State<JodadoresPartidasPagamentoPage> {
     );
   }
 
-  makeListTile(Jogador jogador) {
+  makeListTile(JogadorPagamento jogadorPagamento) {
     try {
       return GestureDetector(
         //onTap: () => _onClickPartRecente(),
         child: ListTile(
           contentPadding:
-              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           leading: Container(
             padding: EdgeInsets.only(right: 12.0),
             decoration: new BoxDecoration(
@@ -188,7 +192,7 @@ class _HomePageState extends State<JodadoresPartidasPagamentoPage> {
             child: Icon(Icons.sports_soccer, color: Colors.white),
           ),
           title: Text(
-            jogador.nome,
+            jogadorPagamento.jogador.nome,
             //c.ordemServico,
             style: GoogleFonts.lato(
                 color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
@@ -199,13 +203,14 @@ class _HomePageState extends State<JodadoresPartidasPagamentoPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    jogador.posicao,
+                    jogadorPagamento.status.descricao,
                     style: GoogleFonts.lato(fontSize: 16),
                   ),
                 ],
               )),
-          trailing: jogador.pago ? Icon(Icons.check) : Icon(Icons.monetization_on_rounded),
-          onTap: () => _onClickPagar(jogador),
+          trailing: jogadorPagamento.status == "Pagamento pendente" ? Icon(
+              Icons.check) : Icon(Icons.monetization_on_rounded),
+          onTap: () => _onClickPagar(jogadorPagamento),
         ),
       );
     } catch (e) {
@@ -214,7 +219,7 @@ class _HomePageState extends State<JodadoresPartidasPagamentoPage> {
   }
 
   makeCard(index) {
-    Jogador jogador = jogadores[index];
+    JogadorPagamento jogador = jogadores[index];
     return Card(
       elevation: 8.0,
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
@@ -229,7 +234,7 @@ class _HomePageState extends State<JodadoresPartidasPagamentoPage> {
   }
 
   Future<void> _onRefresh() {
-    return _bloc.getJogadoresByPartida(widget.partidasRecentes);
+    _bloc.getJogadorPagamentoByPartidaId(widget.partidasRecentes.id.toString());
   }
 
   Future<bool> _onBackPressed() async {
@@ -252,7 +257,7 @@ class _HomePageState extends State<JodadoresPartidasPagamentoPage> {
     _bloc.dispose();
   }
 
-  _onClickPagar(Jogador jogador) async {
+  _onClickPagar(JogadorPagamento jogador) async {
     double total = widget.partidasRecentes.preco / jogadores.length;
 
     final Map<String, Object> preference = {
@@ -272,24 +277,55 @@ class _HomePageState extends State<JodadoresPartidasPagamentoPage> {
       publicKey: "TEST-cb6fcf00-0dc2-4d60-abb7-c5b2f072a75f",
       preference: preference,
       accessToken:
-          "TEST-373716422145450-111002-2c5edffd163aaf27791da1785da6ab91-216354271",
+      "TEST-373716422145450-111002-2c5edffd163aaf27791da1785da6ab91-216354271",
     ))
         .fold((Failure failure) {
+      DialogUtils.showCustomDialog(context,
+          title: "Erro no pagamento tente novamente!",
+          okBtnText: "Ok",
+          cancelBtnText: "",
+          okBtnFunction: () => Navigator.pop(context) //Fazer algo
+        //Fazer algo
+      );
+
       debugPrint('Failure => ${failure.message}');
-    }, (Payment payment) {
+    }, (Payment payment)  async {
 
-
-      debugPrint('Payment => ${payment.paymentId}');
-      setState(() {
-        jogador.pago = true;
-      });
+      // final response = await JogadorPagamentoApi.insertPagamento(
+      //     jogador.status.id);
+      // // debugPrint('Payment => ${payment.paymentId}');
+      //
+      // if (response.ok) {
+      //   DialogUtils.showCustomDialog(context,
+      //       title: "Sucesso você se juntou ao time",
+      //       okBtnText: "Ok",
+      //       cancelBtnText: "",
+      //       okBtnFunction: () => Navigator.pop(context) //Fazer algo
+      //     //Fazer algo
+      //   );
+      // }
 
 
     });
 
 
-    if (response) {
+    response.whenComplete(() async {
+      final response = await JogadorPagamentoApi.insertPagamento(
+          jogador.id);
+      // debugPrint('Payment => ${payment.paymentId}');
 
-    }
+      if (response.ok) {
+        DialogUtils.showCustomDialog(context,
+            title: "Pagamento realizado com sucesso!",
+            okBtnText: "Ok",
+            cancelBtnText: "",
+            okBtnFunction: () {
+              Navigator.pop(context);
+              _bloc.getJogadorPagamentoByPartidaId(widget.partidasRecentes.id.toString());
+            } //Fazer algo
+          //Fazer algo
+        );
+      }
+    });
   }
 }

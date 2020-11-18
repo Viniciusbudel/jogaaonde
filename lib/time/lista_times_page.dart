@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jogaaonde/campeonato/campeonato_bloc.dart';
+import 'package:jogaaonde/campeonato/campeonato_chaves_page.dart';
+import 'package:jogaaonde/campeonato/lista_campeonatos_time_page.dart';
 import 'package:jogaaonde/home/home_page.dart';
 import 'package:jogaaonde/partidas/buscar_partida/lista_partidas_proximas.dart';
 import 'package:jogaaonde/partidas/minhas_partidas/minhas_partidas.dart';
@@ -119,7 +121,7 @@ class _ListarTimePageState extends State<ListarTimePage> {
         stream: _bloc.stream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return TextError("Não foi possivel buscar os dados!");
+            return TextError("Nenhum registro encontrado!");
           }
           if (!snapshot.hasData) {
             return Center(
@@ -232,6 +234,9 @@ class _ListarTimePageState extends State<ListarTimePage> {
       case "minhasReservas":
         push(context, ListaMinhasPartidasPage(time));
         break;
+      case "listarCampeonato":
+        push(context, ListarCampeonatoTimePage(time.id.toString()));
+        break;
     }
   }
 
@@ -239,6 +244,9 @@ class _ListarTimePageState extends State<ListarTimePage> {
     switch (widget.origem) {
       case "campeonato":
         return "Selecione o time para\ninscrever no campeonato";
+        break;
+      case "listarCampeonato":
+        return "Selecione o time para\nconsultar o campeonato";
         break;
       case "home":
         return "Seus Times";

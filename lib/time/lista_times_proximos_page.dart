@@ -73,7 +73,7 @@ class _ListarTimesProximosPageState extends State<ListarTimesProximosPage> {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              "Listar Time",
+                              "Esses são os times da sua região",
                               style: GoogleFonts.lato(
                                   color: Color(0xffa29aac),
                                   fontSize: 14,
@@ -103,7 +103,7 @@ class _ListarTimesProximosPageState extends State<ListarTimesProximosPage> {
         stream: _bloc.stream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return TextError("Não foi possivel buscar os dados!");
+            return TextError("Nenhum registro encontrado!");
           }
           if (!snapshot.hasData) {
             return Center(

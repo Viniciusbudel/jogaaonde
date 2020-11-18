@@ -6,8 +6,10 @@ import 'package:jogaaonde/jogador/jogador.dart';
 import 'package:jogaaonde/jogador/jogador_bloc.dart';
 import 'package:jogaaonde/partidas/partidas_recentes/avaliacao_jogador.dart';
 import 'package:jogaaonde/partidas/partidas_recentes/partidas_recentes_api.dart';
+import 'package:jogaaonde/social/social_page.dart';
 import 'package:jogaaonde/time/time.dart';
 import 'package:jogaaonde/utils/nav.dart';
+import 'package:jogaaonde/utils/widgets/custom_dialog.dart';
 import 'package:jogaaonde/utils/widgets/custom_text_error.dart';
 import 'package:jogaaonde/utils/widgets/custom_button.dart';
 
@@ -102,7 +104,7 @@ class _HomePageState extends State<JodadoresPartidasPage> {
         stream: _bloc.stream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return TextError("Não foi possivel buscar os dados!");
+            return TextError("Nenhum registro encontrado!");
           }
           if (!snapshot.hasData) {
             return Center(
@@ -303,7 +305,7 @@ class _HomePageState extends State<JodadoresPartidasPage> {
     _bloc.dispose();
   }
 
-  _onClickConfirmarAvalicao() {
+  _onClickConfirmarAvalicao() async {
     try {
       List<AvaliacaoJogador> avaliacoesJogador = List();
 
@@ -316,10 +318,26 @@ class _HomePageState extends State<JodadoresPartidasPage> {
         avaliacoesJogador.add(avaliacaoJogador);
       });
 
-      PartidasRecentesApi.insertAvaliacaoJogador(
+     final response = await PartidasRecentesApi.insertAvaliacaoJogador(
           avaliacoesJogador, widget.idPartida.toString());
+
+      DialogUtils.showCustomDialog(context,
+          title: "Partida avaliada com sucesso!",
+          okBtnText: "Ok",
+          cancelBtnText: "",
+          okBtnFunction: () => push(context, SocialPage()) //Fazer algo
+        //Fazer algo
+      );
+
     } catch (e) {
       print(e);
+      DialogUtils.showCustomDialog(context,
+          title: "Partida avaliada com sucesso!",
+          okBtnText: "Ok",
+          cancelBtnText: "",
+          okBtnFunction: () => push(context, SocialPage()) //Fazer algo
+        //Fazer algo
+      );
     }
   }
 }

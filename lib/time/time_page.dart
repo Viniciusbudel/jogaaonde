@@ -32,7 +32,7 @@ class _HomePageState extends State<TimePage> {
   final _formKey = GlobalKey<FormState>();
   bool showProgress = false;
   CheckBoxModel dispoParaJogosCheck =
-      CheckBoxModel(texto: "Disponível para Jogos",checked: true);
+      CheckBoxModel(texto: "Disponível para Jogos", checked: true);
   CheckBoxModel aceitaIntegrantesCheck =
       CheckBoxModel(texto: "Aceita Integrantes");
 
@@ -51,7 +51,6 @@ class _HomePageState extends State<TimePage> {
   @override
   void initState() {
     _bloc.getJogadoresByTimeId(widget.time.id.toString());
-
 
     _tNome.text = widget.time.nome;
     _tDescricao.text = widget.time.descricao;
@@ -164,7 +163,7 @@ class _HomePageState extends State<TimePage> {
         stream: _bloc.stream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return TextError("Não foi possivel buscar os dados!");
+            return TextError("Nenhum registro encontrado!");
           }
           if (!snapshot.hasData) {
             return Center(
@@ -266,7 +265,7 @@ class _HomePageState extends State<TimePage> {
           ),
           trailing: GestureDetector(
               onTap: () => null, //PartidasRecentesPage
-              child: Icon(Icons.cancel, color: Colors.white, size: 30.0))),
+              child: Icon(Icons.arrow_right_alt, color: Colors.white, size: 30.0))),
     );
   }
 
@@ -475,7 +474,9 @@ class _HomePageState extends State<TimePage> {
     id = await Prefs.getString("id");
 
     setState(() {
-      widget.time.aceitaIntegrantes ? aceitaIntegrantesCheck.checked = true : aceitaIntegrantesCheck.checked = false;
+      widget.time.aceitaIntegrantes
+          ? aceitaIntegrantesCheck.checked = true
+          : aceitaIntegrantesCheck.checked = false;
 
       id;
     });

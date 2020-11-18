@@ -7,6 +7,8 @@ import 'package:jogaaonde/home/home_page.dart';
 import 'package:jogaaonde/quadra/quadra.dart';
 import 'package:jogaaonde/quadra/quadra_bloc.dart';
 import 'package:jogaaonde/quadra/quadra_page.dart';
+import 'package:jogaaonde/social/social_page.dart';
+import 'package:jogaaonde/time/lista_times_page.dart';
 import 'package:jogaaonde/utils/constants.dart';
 import 'package:jogaaonde/utils/nav.dart';
 import 'package:jogaaonde/utils/widgets/custom_text_error.dart';
@@ -45,7 +47,7 @@ class _CampeonatoPageState extends State<CampeonatoPage> {
                       icon: Icon(Icons.arrow_back_ios),
                       color: Colors.white70,
                       onPressed: () {
-                        Navigator.pop(context);
+                        push(context, SocialPage());
                       },
                     ),
                     Column(
@@ -207,5 +209,8 @@ class _CampeonatoPageState extends State<CampeonatoPage> {
     push(context, ListarCampeonatoPage());
   }
 
-  _onClickCardConsultar() {}
+  _onClickCardConsultar() {
+    push(context, ListarTimePage("listarCampeonato"));
+
+  }
 }

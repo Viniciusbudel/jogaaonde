@@ -10,7 +10,7 @@ import 'package:jogaaonde/utils/simple_bloc.dart';
 class PosicaoJogadorBloc extends SimpleBloc<List<PosicaoJogador>> {
   get stream => controller.stream;
 
-  Future<List<PosicaoJogador>> getPosicaoJogador(PosicaoJogador c) async {
+  Future<List<PosicaoJogador>> getPosicaoJogador() async {
 
     List<PosicaoJogador> response = await PosicaoJogadorApi.getPosicaoJogador();
 
